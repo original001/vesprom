@@ -1,0 +1,221 @@
+<link rel="stylesheet" type="text/css" href="data/{$smarty.const.TPL}/ui.dropdownchecklist.standalone.css">
+<script type="text/javascript" src="data/{$smarty.const.TPL}/ui.dropdownchecklist-1.4-min.js"></script>
+<link rel="stylesheet" type="text/css" href="data/{$smarty.const.TPL}/tinyTips.css">
+<script type="text/javascript" src="data/{$smarty.const.TPL}/jquery.tinyTips.js"></script>
+
+<div class="fade_out"> 
+</div>
+
+<div class="filter">
+<h4>Подбор товара</h4>
+<div id="extrafilter2">
+<div class="fil_me"></div>
+  <form name="efAdvancedSearchInCategory" method="get" action="index.php" id="efAdvancedSearchInCategory">
+    <input type='hidden' name='categoryID' value='{$efcategoryID}'>
+    <input type='hidden' name='extrafilter' value='1'>
+    <input type='hidden' value='1' name='advanced_search_in_category'>
+
+    <b style="font-family:'helvetica',inherit;color:#000;">{$smarty.const.STRING_NAME}</b><br>
+    <input type="text" name="search_name" style="width: 150px; margin-top: 2px;" value="{$efsearch_name}"><br>
+    <div class="fil_me"></div>
+    <b style="font-family:'helvetica',inherit;color:#000;">{$smarty.const.STRING_PRODUCT_PRICE}</b><br>
+
+    <div class="fil_me"></div>
+    <div id="efslider"></div>
+
+    <div class="fromto">
+        {$smarty.const.STRING_PRICE_FROM}&nbsp;<input name="search_price_from" type="text" id="price_from" style="width:60px;padding-left:5px;">
+        {$smarty.const.STRING_PRICE_TO}&nbsp;<input name="search_price_to" type="text" id="price_to" style="width: 60px;padding-left:5px;"> {$efpriceUnit}
+    </div>
+
+    <div class="fil_me"></div>
+
+    
+    {if $efparams}
+    {section name=i loop=$efparams}
+    {if $efparams[i].filter1 eq 1}
+    <div class="filterborder">
+    <div style="margin-bottom: 8px;line-height:18px;font-size:13px;font-family:'helvetica',inherit;color:#000;"><b>{$efparams[i].name}</b></div>
+
+    {if $efparams[i].controlIsTextField eq 0} {* чекбоксы *}
+{*
+      <label><input type="checkbox" id='efall_{$efparams[i].optionID}' onclick="efParamSet({$efparams[i].optionID},true)">Все</label>
+      <label><input type="checkbox" id='efnon_{$efparams[i].optionID}' onclick="efParamSet({$efparams[i].optionID},false)" {$efparams[i].set}>{$smarty.const.STRING_UNIMPORTANT}</label><br>
+*}
+      <label><input type="checkbox" id='efall_{$efparams[i].optionID}' onclick="efParamToggle({$efparams[i].optionID},true)">Все</label><br>
+	  {section name=j loop=$efparams[i].variants}
+      <label><input type="checkbox" {$efparams[i].variants[j].set} name='param_{$efparams[i].optionID}[]' id='efparam_{$efparams[i].optionID}_{$efparams[i].variants[j].variantID}' value='{$efparams[i].variants[j].variantID}' onclick="$('input[id=\'efnon_{$efparams[i].optionID}\']').attr({literal}{checked:false}{/literal});$('input[id=\'efall_{$efparams[i].optionID}\']').attr({literal}{checked:false}{/literal});">{$efparams[i].variants[j].value} ({$efparams[i].variants[j].count})</label><br>
+	  {/section}
+
+    {elseif $efparams[i].controlIsTextField eq 1} {* произвольная строка *}
+      <input type="text" style="width: 150px;" name='param_{$efparams[i].optionID}' id='efparam_{$efparams[i].optionID}' value='{$efparams[i].set}'>
+
+    {elseif $efparams[i].controlIsTextField eq 2} {* движки по вариантам характеристики *}
+
+      <script>
+      $(function()
+        {literal}{{/literal}
+        efSliderInit({$efparams[i].optionID},{$efparams[i].min},{$efparams[i].max},{$efparams[i].min_cursor},{$efparams[i].max_cursor})
+        {literal}}{/literal});
+      </script>
+
+      <label><input type="checkbox" name="param_{$efparams[i].optionID}[2]" id='efnon_{$efparams[i].optionID}' onclick="efSliderReset({$efparams[i].optionID},{$efparams[i].min},{$efparams[i].max})" {if $efparams[i].min_cursor EQ $efparams[i].min && $efparams[i].max_cursor EQ $efparams[i].max}checked{/if}>{$smarty.const.STRING_UNIMPORTANT}</label><br>
+      <div class="fil_me"></div>
+      <div id="efslider_{$efparams[i].optionID}"></div>
+
+      <div class="fromto">
+          {$smarty.const.STRING_PRICE_FROM}
+          <input name="param_{$efparams[i].optionID}[0]" type="text" id="efparam_{$efparams[i].optionID}_1" style="width:60px;padding-left:5px;" onchange="efChangeFromTo({$efparams[i].optionID},0)">
+          {$smarty.const.STRING_PRICE_TO}
+          <input name="param_{$efparams[i].optionID}[1]" type="text" id="efparam_{$efparams[i].optionID}_2" style="width:60px;padding-left:5px;" onchange="efChangeFromTo({$efparams[i].optionID},1)">
+          <img class="tTipSmall" title="<b>Доступные варианты</b>{section name=j loop=$efparams[i].variants}<br>{$efparams[i].variants[j].value} ({$efparams[i].variants[j].count}){/section}" width="15px" src="data/{$smarty.const.TPL}/q.png" alt="?">
+      </div>
+
+    {elseif $efparams[i].controlIsTextField eq 3} {* селект с чекбоксами *}
+    <div class="ckbox">
+      <select name='param_{$efparams[i].optionID}[]' id="efparam_{$efparams[i].optionID}" multiple="multiple" size="3" style="display:none">
+        <option value='0'>Все</option>
+        {section name=j loop=$efparams[i].variants}
+        <option value='{$efparams[i].variants[j].variantID}' {if $efparams[i].variants[j].set}selected{/if}>{$efparams[i].variants[j].value} ({$efparams[i].variants[j].count})</option>
+        {/section}
+      </select>
+    </div>
+    {/if}
+    </div>
+    {/if}
+    {/section}
+    {/if}
+    <div class="fil_me"></div>
+    <div class="fil_me"></div>
+    <input type="button" value="{$smarty.const.VIEW_BUTTON}" onclick="document.getElementById('efAdvancedSearchInCategory').submit();return false;">
+    <input type="button" value="Сбросить" onclick="efAllParamReset()">
+  </form>
+</div>
+</div>
+
+<script type="text/javascript">
+{literal}
+$(document).ready(function() {
+
+ $('#extrafilter2').show(); // dropdownchecklist не инитится нормально при display:none
+ $("select[id^='efparam_']").dropdownchecklist({
+  icon: { placement: 'right',
+          toOpen:  'ui-icon-arrowthick-1-s',
+          toClose: 'ui-icon-arrowthick-1-n' },
+  width: 150, 
+  maxDropHeight: 150,
+  emptyText: 'не важно',
+  zIndex: 6,
+  firstItemChecksAll: true
+  });
+ $('#extrafilter2').hide(); // вернем обратно
+
+ $('img.tTipSmall').tinyTips('small', 'title');
+
+ $("#efslider").slider({
+   {/literal}
+   range:true,
+   min:{$efsearch_price_min},
+   max:{$efsearch_price_max},
+   values:[{$efsearch_price_from},{$efsearch_price_to}],
+   step:1,
+   {literal}
+   slide:function(event,ui) {
+     $("#price_from").val(ui.values[0]);
+     $("#price_to").val(ui.values[1]);
+     }
+ });
+
+ {/literal}
+ $("#price_from").val({$efsearch_price_from});
+ $("#price_to").val({$efsearch_price_to});
+ {literal}
+
+ efFilterSetShow();
+});
+
+function efFilterSetShow() {
+  if(efGetCookie('effilterblock') == '0'){
+    $('#extrafilter1').html('Свернуть');
+    $('#extrafilter2').show();}
+//  else{
+//    $('#extrafilter1').html('Развернуть');
+//    $('#extrafilter2').hide();}
+}
+
+function efFilterToggleShow() {
+  if($('#extrafilter1').html()=='Свернуть'){
+    efSetCookie('effilterblock', '1', 10, '/');
+    $('#extrafilter1').html('Развернуть');
+    $('#extrafilter2').hide();}
+  else{
+    efSetCookie('effilterblock', '0', 10, '/');
+    $('#extrafilter1').html('Свернуть');
+    $('#extrafilter2').show();}
+}
+
+function efChangeFromTo(optionID,fromto) {
+  $("input[id='efnon_"+optionID+"']").attr({checked:false});
+  $("#efslider_"+optionID).slider('values',fromto,getElementById('efparam_'+optionID+'_'+fromto).value);
+}
+
+function efSliderInit(optionID,vmin,vmax,min_cursor,max_cursor) {
+  $("#efslider_"+optionID).slider({
+    range:true,
+    min:vmin,
+    max:vmax,
+    values:[min_cursor,max_cursor],
+    step:1,
+    slide:function(event,ui) {
+      $("#efparam_"+optionID+"_1").val(ui.values[0]);
+      $("#efparam_"+optionID+"_2").val(ui.values[1]);
+      $("input[id='efnon_"+optionID+"']").attr({checked:false});
+      }
+  });
+  $("#efparam_"+optionID+"_1").val(min_cursor);
+  $("#efparam_"+optionID+"_2").val(max_cursor);
+}
+
+function efSliderReset(optionID,vmin,vmax) {
+  $("input[id='efparam_"+optionID+"_1']").val(vmin);
+  $("input[id='efparam_"+optionID+"_2']").val(vmax);
+ $("#efslider_"+optionID).slider({values:[vmin,vmax]});
+}
+
+function efParamToggle(optionID) {
+  $("input[id^='efparam_"+optionID+"_']").attr('checked',$("input[id='efall_"+optionID+"']").is(':checked'));
+}
+
+function efParamSet(optionID,check) {
+  $("input[id^='efparam_"+optionID+"_']").attr({checked:check});
+  $("input[id='efnon_"+optionID+"']").attr({checked:!check});
+  $("input[id='efall_"+optionID+"']").attr({checked:check});
+}
+
+function efAllParamReset() {
+  $("input[id^='efall_']").attr({checked:false});
+  $("input[id^='efnon_']").attr({checked:true});
+  $("input[id^='efparam_']").attr({checked:false});
+  $("input[id^='efparam_']").val('');
+  $("select[id^='efparam_']").val('');
+  $("select[id^='efparam_']").dropdownchecklist('refresh');
+}
+
+function efSetCookie(name, value, expiredays, path) {
+  var exdate=new Date();
+  exdate.setDate(exdate.getDate()+expiredays);
+  var expires = exdate.toGMTString();
+  document.cookie = name + "=" + escape(value) +
+  ((expiredays) ? "; expires=" + expires : "") +
+  ((path) ? "; path=" + path : "");
+}
+
+function efGetCookie(name) {
+  var prefix = name + "="; var cookieStartIndex = document.cookie.indexOf(prefix);
+  if (cookieStartIndex == -1) return null;
+  var cookieEndIndex = document.cookie.indexOf(";", cookieStartIndex + prefix.length);
+  if (cookieEndIndex == -1) cookieEndIndex = document.cookie.length;
+  return unescape(document.cookie.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+{/literal}
+</script>

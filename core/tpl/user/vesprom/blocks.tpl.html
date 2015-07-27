@@ -1,0 +1,18 @@
+{* шаблон вывода блоков *}
+
+{section name=b loop=$binfo}
+
+{* формирование заголовка блока *}
+
+
+
+{* вывод содержания блока *}
+
+<table cellspacing="0" cellpadding="0" width="100%">
+  <tr>
+    <td class="{$bclass}" align="{$balign}">{if $binfo[b].html eq 1}{include file="blocks/`$binfo[b].url`" blocknum=$smarty.section.b.index}{else}{$binfo[b].content}{/if}</td>
+  </tr>
+</table>
+{if $binfo[b].title ne "" && $nopad ne 1}<table cellspacing="0" cellpadding="0" width="100%"><tr><td class="hdbot">&nbsp;</td></tr></table>{/if}
+
+{/section}

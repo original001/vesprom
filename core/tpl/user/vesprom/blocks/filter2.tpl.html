@@ -1,0 +1,29 @@
+<div align="left">
+    <form name="Filter2" method="get" action="index.php" id="Filter2">
+    <input type='hidden' name='categoryID' value='{$efcategoryID}'>
+    <input type='hidden' name='extrafilter' value='2'>
+    <input type='hidden' value='1' name='advanced_search_in_category'>
+    {if $efparams}
+    {assign var=flag value='0'}
+        {section name=i loop=$efparams}
+        {if $efparams[i].filter2 eq 1}
+              {assign var=flag value='1'}
+	      {section name=j loop=$efparams[i].variants}
+              <label>
+                <input type="checkbox" {$efparams[i].variants[j].set} 
+                       name='param_{$efparams[i].optionID}[]' 
+                       value='{if $efparams[i].controlIsTextField eq 1}{$efparams[i].variants[j].value}{else}{$efparams[i].variants[j].variantID}{/if}'>
+                {$efparams[i].variants[j].value|default:""} ({$efparams[i].variants[j].count})
+              </label>
+	      {/section}
+        {/if}
+        {/section}
+
+        {if $flag}
+        <input type="submit" value="{$smarty.const.VIEW_BUTTON}">
+        {else}
+        Нет элементов для фильтра
+        {/if}
+    {/if}
+  </form>
+</div>

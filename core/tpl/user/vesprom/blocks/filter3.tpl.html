@@ -1,0 +1,97 @@
+<script src="data/{$smarty.const.TPL}/jquery.selectBox.js"></script>
+
+<style>
+{literal}
+.selectBox {
+	display: inline-block;
+	position: relative;
+	width: 165px;
+	height: 20px;
+	line-height: 20px;
+	color: #000;
+	text-decoration: none;
+	border: 1px solid #999;	
+	background-color: #fff;
+}
+.selectBox:hover {
+	color: #000;
+	text-decoration: none;
+}
+.selectBox-label {
+	padding: 0 15px 0 2px;	
+}
+.selectBox-arrow {
+	position: absolute;
+	left: auto;
+	right: 2px;
+	top: 7px;
+	width: 13px;
+	height: 9px;
+	overflow: hidden;
+	cursor: pointer;
+	background: url(/data/{/literal}{$smarty.const.TPL}{literal}/select-button.png) 0 0 no-repeat;
+}
+.selectBox-dropdown-menu {
+	position: absolute;
+	list-style: none;
+	line-height: 20px;
+	background: #fff;
+	margin: 0;
+	padding: 0;
+	border: 1px solid #999;		
+  z-index:2;
+}
+.selectBox-dropdown-menu li {
+	display: block;	
+}
+.selectBox-dropdown-menu li a {
+	display: block;
+	padding: 0 2px;
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;	
+}
+.selectBox-dropdown-menu li a:hover {
+	color: #fff;	
+	text-decoration: none;
+	background: #333;
+}
+{/literal}
+</style>
+
+<script>
+{literal}
+$(function() {
+ $("select[id^='ef3param_']").selectBox();
+ $('#filter3').show();
+});
+{/literal}
+</script>
+
+<div align="left" id="filter3" style="display:none;">
+    <form name="Filter3" method="get" action="index.php">
+    <input type='hidden' name='categoryID' value='{$efcategoryID}'>
+    <input type='hidden' name='extrafilter' value='3'>
+    <input type=hidden value='1' name='advanced_search_in_category'>
+    {if $efparams}
+    {assign var=flag value='0'}
+        {section name=i loop=$efparams}
+            {if $efparams[i].filter3 eq 1}
+            {assign var=flag value='1'}
+            <select name='param_{$efparams[i].optionID}' id='ef3param_{$efparams[i].optionID}'>
+            <option value='0'>{$efparams[i].name|truncate:24:'':true}</option>
+                {section name=j loop=$efparams[i].variants}
+                <option value='{if $efparams[i].controlIsTextField eq 1}{$efparams[i].variants[j].value}{else}{$efparams[i].variants[j].variantID}{/if}'>{$efparams[i].variants[j].value} ({$efparams[i].variants[j].count})</option>
+                {/section}
+            </select>
+            {/if}
+        {/section}
+
+        {if $flag}
+        <input type="submit" value="{$smarty.const.VIEW_BUTTON}">  
+        {else}
+        Нет элементов для фильтра
+        {/if}
+    {/if}
+  </form>
+</div>

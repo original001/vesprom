@@ -1,0 +1,61 @@
+<style>
+{literal}
+.filterborder {
+  border:solid 1px #ccc;
+  margin-top:5px;
+  padding:5px;
+	-webkit-border-radius: .5em; 
+	-moz-border-radius: .5em;
+	border-radius: .5em;
+  }
+{/literal}
+</style>
+
+<div class="fil_me"></div>
+<div id="filterSlider"></div>
+<div class="fil_me"></div>
+<div class="fil_me"></div>
+<table cellspacing="0" cellpadding="0">
+    <tr>
+        <td valign="middle">{$smarty.const.STRING_PRICE_FROM}
+          <input type="text" name="price_from" id="price_from_new" style="width:45px">
+          {$smarty.const.STRING_PRICE_TO}
+          <input type="text" name="price_to" id="price_to_new" style="width: 45px">
+          {$priceUnit}
+        </td>
+    </tr>
+</table>
+<div class="fil_me"></div>
+
+{foreach from=$params item=param}
+    <div class="filterborder">
+    <div><b>{$param.name}</b></div>
+    {foreach from=$param.variants item=variant}
+        <label><input type="checkbox" name='param_new_{$param.optionID}[]' value='{$variant.variantID}'{if $variant.checked} checked{/if}{if !$variant.count} disabled{/if}>{$variant.option_value} ({$variant.count})</label><br>
+    {/foreach}
+    </div>
+{/foreach}
+
+<script>
+{literal}
+$("#filterSlider").slider({
+  range:true,
+  min:{/literal}{$minprice}{literal},
+  max:{/literal}{$maxprice}{literal},
+  values:[{/literal}{$price_from},{$price_to}{literal}],
+  step:1,
+  stop:function() {
+    $('#filterForm').ajaxSubmit(FilterOptions);
+    filterResetShow();
+    },
+  slide:function(event,ui) {
+    $("#price_from_new").val(ui.values[0]);
+    $("#price_to_new").val(ui.values[1]);
+    }
+});
+
+ $("#price_from_new").val({/literal}{$price_from}{literal});
+ $("#price_to_new").val({/literal}{$price_to}{literal});
+ filterResetShow();
+{/literal}
+</script>

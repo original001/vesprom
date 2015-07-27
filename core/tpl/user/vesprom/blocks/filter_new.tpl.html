@@ -1,0 +1,150 @@
+
+<script type="text/javascript" src="/data/{$smarty.const.TPL}/jquery.blockui.js"></script>
+<script type="text/javascript" src="/data/{$smarty.const.TPL}/jquery.form.js"></script>
+
+<div class="fade_out"> 
+</div>
+
+
+<div class="filter">
+ 
+<h4>Подбор товара</h4>
+
+<div id="filter">
+
+
+
+<div id="filterReset"></div>
+
+<div class="fil_me"></div>
+
+<form action="" method="post" name="filterForm" id="filterForm">
+<input type="button" value="Показать" id="filtersubmit" onclick="$('#filterForm').ajaxSubmit(ResultOptions);return false;">
+<label><input type="checkbox" name="filterauto" id="filterauto" value="1">&nbsp;<b>Автопоказ</b></label>
+
+<div class="fil_me"></div>
+
+<select name="sort">
+  <option value="{$smarty.const.CONF_DEFAULT_SORT_ORDER}">Сортировка</option>
+  <option value="Price,name">Цена (возр)</option>
+  <option value="Price DESC,name">Цена (убыв)</option>
+  <option value="name,Price">Название</option>
+  <option value="customers_rating DESC,name,Price">Рейтинг</option>
+</select>
+
+<div class="fil_me"></div>
+
+<select name="prdPerPage">
+  <option value="{$smarty.const.CONF_PRODUCTS_PER_PAGE}"{if $prdPerPage == $smarty.const.CONF_PRODUCTS_PER_PAGE} selected{/if}>На странице</option>
+  <option value="10"{if $prdPerPage == 10} selected{/if}>10 товаров</option>
+  <option value="20"{if $prdPerPage == 20} selected{/if}>20 товаров</option>
+  <option value="50"{if $prdPerPage == 50} selected{/if}>50 товаров</option>
+  <option value="100"{if $prdPerPage == 100} selected{/if}>100 товаров</option>
+</select>
+
+<div class="fil_me"></div>
+
+<input type="hidden" name="categoryID" value="{if $categoryID}{$categoryID}{else}1{/if}"/>
+<input type="hidden" name="cID" value="{$current_currency}"/>
+<div id="filterContent"></div>
+</form>
+</div>
+
+<script>
+{literal}
+var BlockOptions = {
+  overlayCSS:{backgroundColor:"#fff", opacity:0.8, cursor:"wait"},
+  fadeOut:600,
+  message:null
+  };
+
+var ResultOptions = {
+  target: "#filterResult",
+  url: "index.php?do=filter&filter=2",
+  beforeSubmit: beforeSubmit
+  };
+
+var FilterOptions = {
+  target: "#filterContent",
+  url: "index.php?do=filter&filter=1",
+  beforeSubmit: function() {$('#filter').block(BlockOptions)},
+  success:      function() {$('#filter').unblock();
+                            if ($('#filterauto').prop('checked')) $('#filterForm').ajaxSubmit(ResultOptions);
+                           }
+  };
+
+$(function (){
+  $('#filterForm').change(function(){
+  	$(this).ajaxSubmit(FilterOptions);
+    autoShow();
+    filterResetShow();
+  });
+});
+
+function beforeSubmit()
+  {
+  $('#filterResult').prepend('<div id="loader" style="position:fixed;display:none;z-index:100;"><img src="/data/{/literal}{$smarty.const.TPL}{literal}/loading.gif"></div>');
+  document.getElementById('loader').style.left = parseInt((document.documentElement.clientWidth-80)/2)+'px';
+  document.getElementById('loader').style.top =  parseInt((document.documentElement.clientHeight-80)/2)+'px';
+  document.getElementById('loader').style.display='block';
+  }
+
+function filterExpand()
+  {
+  if($('#filterExpand').html()=='Развернуть') 
+    {
+    $('#filter').css('display','block');
+    $('#filterExpand').html('Cвернуть');
+    }
+  else 
+    {
+    $('#filter').css('display','none');
+    $('#filterExpand').html('Развернуть');
+    }
+  }
+
+function filterReset()
+  {
+  var fmin = $('#filterSlider').slider('option','min');
+  var fmax = $('#filterSlider').slider('option','max');
+  $('#filterSlider').slider({values: [fmin,fmax]});
+  $('#price_from_new').val(fmin);
+  $('#price_to_new').val(fmax);
+  $('input[name^=param_new_]').prop('checked',false);
+ 	$('#filterForm').ajaxSubmit(FilterOptions);
+  }
+
+function filterResetShow()
+  {
+  var filter = false;
+  var values = $('#filterSlider').slider('option','values');
+  if (values[0] > $('#filterSlider').slider('option','min')) filter = true;
+  if (values[1] < $('#filterSlider').slider('option','max')) filter = true;
+  $('input[name^=param_new_]').each(function() {if ($(this).prop('checked')) filter = true});
+  if (filter) $('#filterReset').html('<span class="filterhref" onclick="filterReset();">Сбросить фильтр</span>');
+  else $('#filterReset').html('<span style="color:grey">Сбросить фильтр</span>');
+  }
+
+function autoShow()
+  {
+  $('#filtersubmit').prop('disabled',$('#filterauto').prop('checked'));
+  }
+
+function go2page(offset)
+  {
+  var options = {
+    target: "#filterResult",
+    url: "index.php?do=filter&filter=2&offset="+offset,
+    beforeSubmit: beforeSubmit
+    };
+  $('#filterForm').ajaxSubmit(options)
+  }
+
+pic = new Image();
+pic.src='/data/{/literal}{$smarty.const.TPL}{literal}/loading.gif';
+$('#filterForm').ajaxSubmit(FilterOptions);
+
+{/literal}
+</script>
+
+</div>

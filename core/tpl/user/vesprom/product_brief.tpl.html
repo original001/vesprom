@@ -1,0 +1,64 @@
+{* шаблон короткого описния товара *}
+
+{if $product_info ne NULL}
+{if $smarty.const.CONF_MOD_REWRITE eq 1}
+{assign var="tlink" value="<a href='product_`$product_info.productID`.html'>`$product_info.name`</a>"}
+{else}
+{assign var="tlink" value="<a href='index.php?productID=`$product_info.productID`'>`$product_info.name`</a>"}
+{/if}
+{assign var="preheader" value="<a href='`$smarty.const.ADMIN_FILE`?productID=`$product_info.productID`&amp;eaction=prod' title='`$smarty.const.STRING_EDITPR`' style='float: right;'>+</a>"}
+{if $isadmin eq "yes"}{assign var="postheader" value=`$preheader``$tlink`}{else}{assign var="postheader" value=$tlink}{/if}
+
+
+<div class="product">
+        
+        <div class="product_header">
+          <div class="product_header_desc">
+           {include file="header.tpl.html" header=$postheader}
+          </div>
+        </div>
+        
+        
+        {if $smarty.const.CONF_DISPLAY_FOTO eq 0}
+          {if $product_info.picture}
+          <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}" class="product_img"><img src="data/small/{$product_info.picture}" alt="{$product_info.name}"></a>
+          {else}
+          {if $smarty.const.CONF_DISPLAY_NOPHOTO eq 0}
+          <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}"><img src="data/empty.gif" alt="no photo"></a>
+          {/if}
+          {/if}
+          {/if}
+        {if $smarty.const.CONF_DISPLAY_FOTO eq 1}
+          {if $product_info.picture}
+          <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}" class="product_img"><img src="data/small/{$product_info.picture}" alt="{$product_info.name}"></a>
+          {else}
+          {if $smarty.const.CONF_DISPLAY_NOPHOTO eq 1}
+          <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}"><img src="data/empty.gif" alt="no photo"></a>
+          {/if}
+          {/if}
+          {/if}
+          <div class="product_menu">
+          <div class="pr_desc">
+               {if $product_info.brief_description}{$product_info.brief_description}{/if}
+                          
+          </div>
+          <span class="drop_price">
+
+              {if $currencies_count ne 0}{if $product_info.Price <= 0}{$smarty.const.STRING_NOPRODUCT_IN}{else}{$product_info.PriceWithUnit}{/if}{/if}
+              
+              {if $currencies_count ne 0}{if $product_info.list_price > 0 && $product_info.list_price > $product_info.Price && $product_info.Price > 0}
+              
+               {$product_info.list_priceWithUnit}
+              
+              {/if}{/if}
+
+          </span>
+          <div class="drop_more">
+           <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}">{$smarty.const.STRING_MOREPR}</a>
+          </div>
+        </div>
+       
+      </div>
+
+
+{/if}
