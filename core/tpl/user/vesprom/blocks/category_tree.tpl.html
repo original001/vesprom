@@ -5,7 +5,7 @@
             {section name=j loop=$categories_tree max=$categories_tree[h].level-1}
       <li class="invis"></li>
       {/section}           
-            <li>{if $smarty.const.CONF_SHOW_COUNTPROD eq 1}<span style="float:right">&nbsp;&nbsp;{$categories_tree[h].products_count}</span>{/if}<a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}category_{$categories_tree[h].categoryID}.html{else}index.php?categoryID={$categories_tree[h].categoryID}{/if}" {if $categoryID == $categories_tree[h].categoryID}class=""{/if}>{$categories_tree[h].name}</a></li>
+            <li>{if $smarty.const.CONF_SHOW_COUNTPROD eq 1}<span style="float:right">&nbsp;&nbsp;{$categories_tree[h].products_count}</span>{/if}<a href="{$categories_tree[h]|@fu_make_url}" {if $categoryID == $categories_tree[h].categoryID}class=""{/if}>{$categories_tree[h].name}</a></li>
             {/if} 
             {/section}
           </ul>{/if}

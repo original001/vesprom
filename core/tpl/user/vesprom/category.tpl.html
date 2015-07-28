@@ -8,7 +8,7 @@
 
 
   
-    <div class="bread">{if $smarty.const.CONF_SHOW_COUNTPROD eq 1}<span style="float: right;">{$smarty.const.STRING_COUNTPROD}: {$products_to_showc}</span>{/if}<a href="{$smarty.const.CONF_FULL_SHOP_URL}">{$smarty.const.LINK_TO_HOMEPAGE}</a>{section name=i loop=$product_category_path}{if $product_category_path[i].categoryID != 1} &nbsp;/&nbsp; <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}category_{$product_category_path[i].categoryID}.html{else}index.php?categoryID={$product_category_path[i].categoryID}{/if}">{$product_category_path[i].name}</a>{/if}{/section}</div>
+    <div class="bread">{if $smarty.const.CONF_SHOW_COUNTPROD eq 1}<span style="float: right;">{$smarty.const.STRING_COUNTPROD}: {$products_to_showc}</span>{/if}<a href="{$smarty.const.CONF_FULL_SHOP_URL}">{$smarty.const.LINK_TO_HOMEPAGE}</a>{section name=i loop=$product_category_path}{if $product_category_path[i].categoryID != 1} &nbsp;/&nbsp; <a href="{$product_category_path[i]|@fu_make_url}">{$product_category_path[i].name}</a>{/if}{/section}</div>
  
 
 {* вывод описания подкатегорий (если есть) *}

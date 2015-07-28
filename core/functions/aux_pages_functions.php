@@ -7,7 +7,7 @@
 
 function auxpgGetAllPageAttributes()
 {
-        $q = db_query("select aux_page_ID, aux_page_name, aux_page_text_type from ".AUX_PAGES_TABLE);
+        $q = db_query("select aux_page_ID, aux_page_name, aux_page_text_type, uri from ".AUX_PAGES_TABLE);
         $data = array();
         while( $row = db_fetch_row( $q ) ) $data[] = $row;
         return $data;

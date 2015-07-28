@@ -142,3 +142,96 @@ if(d.images){
 }
 }
 preloadImages("data/admin/003.gif","data/admin/004.gif");
+
+/* BEGIN of Friendly URLs by http://trickywebs.org.ua/ */
+
+fuItemNameObj = null;
+fuItemSlugObj = null;
+
+function fu_change_category() {
+  var form = document.getElementById('url_rewriter');
+  form.update_slug.value = '0';
+  form.submit();
+}
+
+function fu_select_item(itemID) {
+
+  /* Deselect previously selected items */
+  if( fuItemNameObj )
+	  fuItemNameObj.style.fontWeight = 'normal';
+  if( fuItemSlugObj )
+	  fuItemSlugObj.style.fontWeight = 'normal';
+
+  /* Get new items */
+  fuItemNameObj = document.getElementById('objectId_'+itemID+'_name');
+  fuItemSlugObj = document.getElementById('objectId_'+itemID+'_slug');
+  var itemName = fuItemNameObj.innerHTML;
+  var itemUri = fuItemSlugObj.innerHTML;
+
+  /* Select new items */
+  fuItemNameObj.style.fontWeight = 'bold';
+  fuItemSlugObj.style.fontWeight = 'bold';
+
+  var form = document.getElementById('url_rewriter');
+  form.itemID.value = itemID;
+  form.newSlug.value = itemUri;
+  document.getElementById('fuObjName').innerHTML = itemName;
+
+}
+
+function fu_submit() {
+  var form = document.getElementById('url_rewriter');
+  if(!form.itemID.value || ('0' == form.itemID.value))
+	  alert('Выберите объект для редактирования URL');
+  else {
+	  form.update_slug.value = '1';
+	  form.submit();
+  }
+}
+
+function translit(s){
+  var a=new Array('а','б','в','г','д','е','ё','ж','з','ы','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','ъ','ь','э','ю','я','ї','і','є',' ','\'',',')
+  var b=new Array('a','b','v','g','d','e','yo','zh','z','y','i','y','k','l','m','n','o','p','r','s','t','u','f','h','ts','ch','sh','sch','','','e','yu','ya','yi','i','ye','-','','')
+  var x=s.toLowerCase()
+  for(i=0;i<a.length;i++){
+	  y=eval('/'+a[i]+'/g');
+	  x=x.replace(y,b[i]);
+  }
+  return x.replace(/[^a-zA-Z0-9\-]/, '-');
+}
+
+function fu_translit(){
+  var form = document.getElementById('url_rewriter');
+  if(form.itemID.value && ('0' != form.itemID.value))
+	  form.newSlug.value = translit( document.getElementById('fuObjName').innerHTML );
+}
+
+function fu_auto_ext(){
+  var form = document.getElementById('url_rewriter');
+  if(form.itemID.value && ('0' != form.itemID.value))
+	  form.newSlug.value = form.newSlug.value + '.html';
+}
+
+function fu_clear(){
+  var form = document.getElementById('url_rewriter');
+  if(form.itemID.value && ('0' != form.itemID.value))
+	  form.newSlug.value = '';
+}
+
+// Auto-Transliterator form OnSubmit
+function fu_transliterator_submit() {
+
+  if(document.forms.url_transliterator.setCatSlugs.checked || document.forms.url_transliterator.setPagesSlugs.checked || document.forms.url_transliterator.setNewsSlugs.checked) {
+
+    if(document.forms.url_transliterator.rewriteExistingSlugs.checked)
+      return confirm('Вы уверены, что хотите перегенерировать адреса, которые были определены раньше? Это может привести к проблемам с индексацией поисковыми системами.') ? true : false;
+
+  } else {
+    alert('Выберите, для каких объектов хотите генерировать адреса (верхние галочки)');
+    return false;
+  }
+
+}
+
+/* END of Friendly URLs */
+

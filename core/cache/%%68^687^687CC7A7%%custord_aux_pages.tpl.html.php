@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 15:39:20
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:00:38
          compiled from admin/custord_aux_pages.tpl.html */ ?>
 <?php if ($this->_tpl_vars['edit'] || $this->_tpl_vars['add_new']): ?><?php if ($this->_tpl_vars['edit']): ?>
 <form action='<?php echo @ADMIN_FILE; ?>

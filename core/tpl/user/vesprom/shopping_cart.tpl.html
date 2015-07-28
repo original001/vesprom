@@ -58,7 +58,7 @@
           {section loop=$cart_content name=i}
           {counter name=product_count print=false}
           <tr>
-            <td class="padt" align="left" valign="middle">{if $this_is_a_popup_cart_window}{$cart_content[i].name}{else}<a href='{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$cart_content[i].productID}.html{else}index.php?productID={$cart_content[i].productID}{/if}'>{$cart_content[i].name}</a>{/if}</td>
+            <td class="padt" align="left" valign="middle">{if $this_is_a_popup_cart_window}{$cart_content[i].name}{else}<a href='{$cart_content[i]|@fu_make_url}'>{$cart_content[i].name}</a>{/if}</td>
             {if $smarty.const.CONF_DISPLAY_PRCODE eq 1}
             <td class="padt" align="center" valign="middle">{$cart_content[i].product_code}</td>
             {/if}

@@ -17,16 +17,16 @@
                 if ( isset($_GET["search_price_to"]) )
                         if (  trim($_GET["search_price_to"])!="" )
                                 $_GET["search_price_to"] = (int)$_GET["search_price_to"];
-                if ( isset($_GET["categoryID"]) )
-                        $_GET["categoryID"] = (int)$_GET["categoryID"];
+                /*if ( isset($_GET["categoryID"]) )
+                        $_GET["categoryID"] = (int)$_GET["categoryID"];*/
                 if ( isset($_GET["offset"]) )
                         $_GET["offset"] = (int)$_GET["offset"];
 
-                if  (  !catGetCategoryById($_GET["categoryID"])  )  {
-                header("HTTP/1.0 404 Not Found");
-                header("HTTP/1.1 404 Not Found");
-                header("Status: 404 Not Found");
-                die(ERROR_404_HTML);
+                if  (  !catGetCategoryById($_GET["categoryID"]) && ( '0' !== $_GET["categoryID"] )  )  {
+		            header("HTTP/1.0 404 Not Found");
+		            header("HTTP/1.1 404 Not Found");
+		            header("Status: 404 Not Found");
+		            die(ERROR_404_HTML);
                 }
 
                 function _getUrlToNavigate( $categoryID )
@@ -35,22 +35,14 @@
                         $data = ScanGetVariableWithId( array("param") );
                         if ( isset($_GET["search_name"]) )
                                 $url .= "&search_name=".$_GET["search_name"];
-                            # BEGIN ExtraFilter
-if ( isset($_GET["extrafilter"]) )
-        $url .= "&extrafilter=".$_GET["extrafilter"];
-# END ExtraFilter
                         if ( isset($_GET["search_price_from"]) )
                                 $url .= "&search_price_from=".$_GET["search_price_from"];
                         if ( isset($_GET["search_price_to"]) )
                                 $url .= "&search_price_to=".$_GET["search_price_to"];
                         foreach( $data as $key => $val )
                         {
-                                # BEGIN ExtraFilter
-#$url .= "&param_".$key;
-#$url .= "=".$val["param"];
-if (is_array($val["param"])) foreach ($val["param"] as $vkey => $variant) $url .= "&param_".$key."[".$vkey."]=".$variant;
-else $url .= "&param_".$key."=".$val["param"];
-# END ExtraFilter
+                                $url .= "&param_".$key;
+                                $url .= "=".$val["param"];
                         }
                         if ( isset($_GET["search_in_subcategory"]) )
                                 $url .= "&search_in_subcategory=1";
@@ -60,8 +52,12 @@ else $url .= "&param_".$key."=".$val["param"];
                                 $url .= "&direction=".$_GET["direction"];
                         if ( isset($_GET["advanced_search_in_category"]) )
                                 $url .= "&advanced_search_in_category=".$_GET["advanced_search_in_category"];
-                        if (CONF_MOD_REWRITE && $url == "index.php?categoryID=".$categoryID)
-                                $url = "category_".$categoryID;
+                        if (CONF_MOD_REWRITE && $url == "index.php?categoryID=".$categoryID) {
+                                // BEGIN User Friendly URLs
+                                global $uri;
+                                $url = $uri ? FU_CATALOG_ROOT.'/'.$uri : "category_".$categoryID;
+                                // END User Friendly URLs
+                        }
                         return $url;
                 }
 
@@ -69,10 +65,6 @@ else $url .= "&param_".$key."=".$val["param"];
                 {
                         $url = "index.php?categoryID=$categoryID";
                         $data = ScanGetVariableWithId( array("param") );
-                        # BEGIN ExtraFilter
-if ( isset($_GET["extrafilter"]) )
-        $url .= "&extrafilter=".$_GET["extrafilter"];
-# END ExtraFilter
                         if ( isset($_GET["search_name"]) )
                                 $url .= "&search_name=".$_GET["search_name"];
                         if ( isset($_GET["search_price_from"]) )
@@ -81,12 +73,8 @@ if ( isset($_GET["extrafilter"]) )
                                 $url .= "&search_price_to=".$_GET["search_price_to"];
                         foreach( $data as $key => $val )
                         {
-                               # BEGIN ExtraFilter
-#$url .= "&param_".$key;
-#$url .= "=".$val["param"];
-if (is_array($val["param"])) foreach ($val["param"] as $vkey => $variant) $url .= "&param_".$key."[".$vkey."]=".$variant;
-else $url .= "&param_".$key."=".$val["param"];
-# END ExtraFilter
+                                $url .= "&param_".$key;
+                                $url .= "=".$val["param"];
                         }
                         if ( isset($_GET["offset"]) )
                                 $url .= "&offset=".$_GET["offset"];
@@ -118,7 +106,7 @@ else $url .= "&param_".$key."=".$val["param"];
 
                 //get selected category info
                 $category = catGetCategoryById( $categoryID );
-                if ( !$category )
+                if ( !$category && ( '0' !== $_GET["categoryID"] ) )
                 {
                                 header("HTTP/1.0 404 Not Found");
                                 header("HTTP/1.1 404 Not Found");
@@ -186,11 +174,16 @@ else $url .= "&param_".$key."=".$val["param"];
                                         $callBackParam["price"] = $rangePrice;
 
                         if ( $category["show_subcategories_products"] ) $callBackParam["searchInSubcategories"] = true;
+                        
+                        $callBackParam['search_in_current_category'] = isset( $_GET['search_in_current_category'] );
 
                         $count = 0;
                         if (CONF_MOD_REWRITE){
                         $urlfarse = _getUrlToNavigate( $categoryID );
-                        if($urlfarse == "category_".$categoryID) $urlflag = 1; else $urlflag = 0;
+                        // BEGIN User Friendly URLs
+                        //if($urlfarse == "category_".$categoryID) $urlflag = 1; else $urlflag = 0;
+                        $urlflag = isset($_GET['advanced_search_in_category']) && $_GET['advanced_search_in_category'] ? 0 : 1;
+                        // END User Friendly URLs
                         $navigatorHtml = GetNavigatorHtmlmd(
                                                 $urlfarse, CONF_PRODUCTS_PER_PAGE,
                                                 'prdSearchProductByTemplate', $callBackParam,

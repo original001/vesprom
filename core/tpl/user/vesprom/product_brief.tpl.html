@@ -1,11 +1,9 @@
 {* шаблон короткого описния товара *}
-
 {if $product_info ne NULL}
-{if $smarty.const.CONF_MOD_REWRITE eq 1}
-{assign var="tlink" value="<a href='product_`$product_info.productID`.html'>`$product_info.name`</a>"}
-{else}
-{assign var="tlink" value="<a href='index.php?productID=`$product_info.productID`'>`$product_info.name`</a>"}
-{/if}
+
+{assign var="urlRewr" value=$product_info|@fu_make_url}
+{assign var="tlink" value="<a class='phead' href='`$urlRewr`'>`$product_info.name`</a>"}
+
 {assign var="preheader" value="<a href='`$smarty.const.ADMIN_FILE`?productID=`$product_info.productID`&amp;eaction=prod' title='`$smarty.const.STRING_EDITPR`' style='float: right;'>+</a>"}
 {if $isadmin eq "yes"}{assign var="postheader" value=`$preheader``$tlink`}{else}{assign var="postheader" value=$tlink}{/if}
 
@@ -21,19 +19,19 @@
         
         {if $smarty.const.CONF_DISPLAY_FOTO eq 0}
           {if $product_info.picture}
-          <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}" class="product_img"><img src="data/small/{$product_info.picture}" alt="{$product_info.name}"></a>
+          <a href="{$product_info|@fu_make_url}" class="product_img"><img src="data/small/{$product_info.picture}" alt="{$product_info.name}"></a>
           {else}
           {if $smarty.const.CONF_DISPLAY_NOPHOTO eq 0}
-          <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}"><img src="data/empty.gif" alt="no photo"></a>
+          <a href="{$product_info|@fu_make_url}"><img src="data/empty.gif" alt="no photo"></a>
           {/if}
           {/if}
           {/if}
         {if $smarty.const.CONF_DISPLAY_FOTO eq 1}
           {if $product_info.picture}
-          <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}" class="product_img"><img src="data/small/{$product_info.picture}" alt="{$product_info.name}"></a>
+          <a href="{$product_info|@fu_make_url}" class="product_img"><img src="data/small/{$product_info.picture}" alt="{$product_info.name}"></a>
           {else}
           {if $smarty.const.CONF_DISPLAY_NOPHOTO eq 1}
-          <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}"><img src="data/empty.gif" alt="no photo"></a>
+          <a href="{$product_info|@fu_make_url}"><img src="data/empty.gif" alt="no photo"></a>
           {/if}
           {/if}
           {/if}
@@ -54,7 +52,7 @@
 
           </span>
           <div class="drop_more">
-           <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_info.productID}.html{else}index.php?productID={$product_info.productID}{/if}">{$smarty.const.STRING_MOREPR}</a>
+           <a href="{$product_info|@fu_make_url}">{$smarty.const.STRING_MOREPR}</a>
           </div>
         </div>
        

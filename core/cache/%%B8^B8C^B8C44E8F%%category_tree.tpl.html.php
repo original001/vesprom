@@ -1,5 +1,7 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 15:25:44
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:03:34
          compiled from blocks/category_tree.tpl.html */ ?>
+<?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 'fu_make_url', 'blocks/category_tree.tpl.html', 8, false),)), $this); ?>
 <?php if ($this->_tpl_vars['categories_tree'] && $this->_tpl_vars['categories_tree_count'] > 1): ?>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
             <?php unset($this->_sections['h']);
@@ -56,11 +58,9 @@ $this->_sections['j']['last']       = ($this->_sections['j']['iteration'] == $th
       <li class="invis"></li>
       <?php endfor; endif; ?>           
             <li><?php if (@CONF_SHOW_COUNTPROD == 1): ?><span style="float:right">&nbsp;&nbsp;<?php echo $this->_tpl_vars['categories_tree'][$this->_sections['h']['index']]['products_count']; ?>
-</span><?php endif; ?><a href="<?php if (@CONF_MOD_REWRITE == 1): ?>category_<?php echo $this->_tpl_vars['categories_tree'][$this->_sections['h']['index']]['categoryID']; ?>
-.html<?php else: ?>index.php?categoryID=<?php echo $this->_tpl_vars['categories_tree'][$this->_sections['h']['index']]['categoryID']; ?>
-<?php endif; ?>" <?php if ($this->_tpl_vars['categoryID'] == $this->_tpl_vars['categories_tree'][$this->_sections['h']['index']]['categoryID']): ?>class=""<?php endif; ?>><?php echo $this->_tpl_vars['categories_tree'][$this->_sections['h']['index']]['name']; ?>
+</span><?php endif; ?><a href="<?php echo fu_make_url($this->_tpl_vars['categories_tree'][$this->_sections['h']['index']]); ?>
+" <?php if ($this->_tpl_vars['categoryID'] == $this->_tpl_vars['categories_tree'][$this->_sections['h']['index']]['categoryID']): ?>class=""<?php endif; ?>><?php echo $this->_tpl_vars['categories_tree'][$this->_sections['h']['index']]['name']; ?>
 </a></li>
             <?php endif; ?> 
             <?php endfor; endif; ?>
           </ul><?php endif; ?>
-

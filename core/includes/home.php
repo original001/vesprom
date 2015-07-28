@@ -32,7 +32,7 @@
         $cifra = 8; //количество последних товаров для выбора
         $result = array();
 
-        $q = db_query("select s.productID, s.name, s.Price, s.enabled, t.filename FROM ".PRODUCTS_TABLE." AS s LEFT JOIN ".PRODUCT_PICTURES."
+        $q = db_query("select s.productID, s.name, s.Price, s.enabled, t.filename, s.uri, s.uri_opt_val, s.categoryID FROM ".PRODUCTS_TABLE." AS s LEFT JOIN ".PRODUCT_PICTURES."
         AS t on (s.default_picture=t.photoID AND s.productID=t.productID) WHERE s.categoryID!=1 AND s.enabled=1 ORDER BY s.date_added DESC LIMIT 0,".$cifra);
 
         while ($row = db_fetch_row($q))
@@ -101,4 +101,6 @@
 
         $smarty->assign("rand_product", $result[0]);
 */
+
+
 ?>

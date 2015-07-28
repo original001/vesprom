@@ -1,5 +1,7 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 15:47:36
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:02:50
          compiled from pricelist.tpl.html */ ?>
+<?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 'fu_make_url', 'pricelist.tpl.html', 37, false),)), $this); ?>
 
 <div class="bread">
         <a href="http://веспром.рф">Главная</a> &nbsp;/&nbsp; Прайс-лист
@@ -82,9 +84,8 @@ $this->_sections['j']['first']      = ($this->_sections['j']['iteration'] == 1);
 $this->_sections['j']['last']       = ($this->_sections['j']['iteration'] == $this->_sections['j']['total']);
 ?><?php $this->assign('paddingzn', ($this->_tpl_vars['paddingzn']+8)); ?><?php endfor; endif; ?>
             <tr>
-              <td <?php if ($this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][4] != 1): ?> colspan="<?php if (@CONF_DISPLAY_PRCODE == 1): ?>3<?php else: ?>2<?php endif; ?>" <?php endif; ?> <?php if ($this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][4] != 1): ?> class="lt" <?php endif; ?> width="99%" style="padding-left: 15px"><a href="<?php if (@CONF_MOD_REWRITE == 1): ?><?php if ($this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][4] == 1): ?>product_<?php else: ?>category_<?php endif; ?><?php echo $this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][0]; ?>
-.html<?php else: ?>index.php?<?php if ($this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][4] == 1): ?>productID<?php else: ?>categoryID<?php endif; ?>=<?php echo $this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][0]; ?>
-<?php endif; ?>" class="noline"><?php echo $this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][1]; ?>
+              <td <?php if ($this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][4] != 1): ?> colspan="<?php if (@CONF_DISPLAY_PRCODE == 1): ?>3<?php else: ?>2<?php endif; ?>" <?php endif; ?> <?php if ($this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][4] != 1): ?> class="lt" <?php endif; ?> width="99%" style="padding-left: 15px"><a href="<?php echo fu_make_url($this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']]); ?>
+" class="noline"><?php echo $this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][1]; ?>
 </a></td>     
         <?php if (( $this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][4] == 1 ) && ( $this->_tpl_vars['currencies_count'] != 0 )): ?><td nowrap="nowrap"><?php echo $this->_tpl_vars['pricelist_elements'][$this->_sections['i']['index']][5]; ?>
 </td><?php endif; ?>
@@ -118,4 +119,4 @@ $this->_sections['j']['last']       = ($this->_sections['j']['iteration'] == $th
   </tr>
 </table>
 <?php endif; ?>
-      </div>
+      </div>

@@ -44,6 +44,8 @@
 
   settingDefineConstants();
   
+  // Friendly URLs module
+  include('url_rewriter.php');
   include ("core/config/headers.php");
   include ("core/config/error_handler.php");
 

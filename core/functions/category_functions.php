@@ -44,7 +44,7 @@ function processCategories($level, $path, $sel)
         $parent = $path[$level]["parent"];
         if ( $parent == "" || $parent == null ) $parent = "NULL";
 
-        $q = db_query("select categoryID, name from ".CATEGORIES_TABLE.
+        $q = db_query("select categoryID, name, uri from ".CATEGORIES_TABLE.
                 " where parent=".(int)$path[$level]["parent"]." order by sort_order, name");
         $c_path = count($path);
         while ($row = db_fetch_row($q))
@@ -72,7 +72,7 @@ function processCategories($level, $path, $sel)
 function fillTheCList($parent,$level) //completely expand category tree
 {
 
-        $q = db_query("select categoryID, name, products_count, products_count_admin, parent FROM ".
+        $q = db_query("select categoryID, name, products_count, products_count_admin, parent, uri FROM ".
                 CATEGORIES_TABLE." WHERE parent=".(int)$parent." ORDER BY sort_order, name");
         $a = array(); //parents
         while ($row = db_fetch_row($q))
@@ -91,7 +91,7 @@ function fillTheCList($parent,$level) //completely expand category tree
 
 function _recursiveGetCategoryCompactCList( $path, $level )
 {
-        $q = db_query( "select categoryID, parent, name, products_count from ".CATEGORIES_TABLE.
+        $q = db_query( "select categoryID, parent, name, products_count, uri from ".CATEGORIES_TABLE.
                                 " where parent=".(int)$path[$level-1]["categoryID"]." order by sort_order, name " );
         $res = array();
         $selectedCategoryID = null;
@@ -119,7 +119,7 @@ function _recursiveGetCategoryCompactCList( $path, $level )
 
 function getcontentcatresc( $catID )
 {
-        $q = db_query( "select categoryID, name, products_count, description, picture  from ".CATEGORIES_TABLE.
+        $q = db_query( "select categoryID, name, products_count, description, picture, uri from ".CATEGORIES_TABLE.
                                 " where parent=".(int)$catID." order by sort_order, name " );
         $res = array();
         while( $row=db_fetch_row($q) ) $res[] = $row;
@@ -167,7 +167,7 @@ function catGetCategoryCompactCList( $selectedCategoryID )
         $res = array();
         $res[] = array( "categoryID" => 1, "parent" => null,
                                         "name" => ADMIN_CATEGORY_ROOT, "level" => 0 );
-        $q = db_query( "select categoryID, parent, name, products_count from ".CATEGORIES_TABLE.
+        $q = db_query( "select categoryID, parent, name, products_count, uri from ".CATEGORIES_TABLE.
                                 " where parent=1 ".
                                 " order by sort_order, name " );
         $c_path = count($path);
@@ -208,9 +208,9 @@ function catGetCategoryCompactCList( $selectedCategoryID )
 // Returns        nothing
 function _recursiveGetCategoryCList( $parent, $level, $expcat, $_indexType = 'NUM', $cprod = false, $ccat = true)
 {
-global $fc, $mc;
+		global $fc, $mc;
 
-        $rcat  = array_keys ($mc, (int)$parent);
+        $rcat = array_keys( $mc, (int) $parent );
         $result = array(); //parents
 
         $crcat = count($rcat);
@@ -283,6 +283,7 @@ function catGetCategoryCList( $expcat = null, $_indexType='NUM', $cprod = false,
 
 function catGetCategoryCListMin()
 {
+		get_category_tree_mod();
         return _recursiveGetCategoryCList( 1, 0, null, 'NUM', false, false);
 }
 
@@ -395,7 +396,7 @@ function update_psCount($parent)
 global $fc, $mc;
 
           $q = db_query("select categoryID, name, products_count, ".
-                        "products_count_admin, parent, picture, subcount FROM ".
+                        "products_count_admin, parent, picture, subcount, uri FROM ".
                         CATEGORIES_TABLE. " ORDER BY sort_order, name");
           $fc = array(); //parents
           $mc = array(); //parents
@@ -434,7 +435,7 @@ function catGetSubCategories( $categoryID )
 // Returns        array of category ID
 function catGetSubCategoriesSingleLayer( $categoryID )
 {
-        $q = db_query("select categoryID, name, products_count FROM ".
+        $q = db_query("select categoryID, name, products_count, uri FROM ".
                         CATEGORIES_TABLE." WHERE parent=".(int)$categoryID." order by sort_order, name");
         $result = array();
         while ($row = db_fetch_row($q)) $result[] = $row;
@@ -453,7 +454,7 @@ function catGetCategoryById($categoryID)
 {
         $q = db_query("select categoryID, name, parent, products_count, description, picture, ".
                 " products_count_admin, sort_order, viewed_times, allow_products_comparison, allow_products_search, ".
-                " show_subcategories_products, meta_description, meta_keywords, title ".
+                " show_subcategories_products, meta_description, meta_keywords, title, uri ".
                 " from ".CATEGORIES_TABLE." where categoryID=".(int)$categoryID);
         $catrow = db_fetch_row($q);
         return $catrow;
@@ -575,7 +576,7 @@ function catCalculatePathToCategory( $categoryID )
 
         do
         {
-                $q = db_query("select categoryID, parent, name FROM ".
+                $q = db_query("select categoryID, parent, name, uri FROM ".
                         CATEGORIES_TABLE." WHERE categoryID=".(int)$categoryID);
                 $row = db_fetch_row($q);
                 $path[] = $row;
@@ -608,7 +609,7 @@ function catCalculatePathToCategoryA( $categoryID )
         $curr = $categoryID;
         do
         {
-                $q = db_query("select categoryID, parent, name FROM ".
+                $q = db_query("select categoryID, parent, name, uri FROM ".
                         CATEGORIES_TABLE." WHERE categoryID=".(int)$categoryID);
                 $row = db_fetch_row($q);
                 if($categoryID != $curr) $path[] = $row;
@@ -671,5 +672,26 @@ function catDeleteCategory( $categoryID )
 
         db_query("delete FROM ".CATEGORIES_TABLE." WHERE categoryID=".(int)$categoryID);
 }
+
+
+/*
+* Function to override standard method, called in old admin.php
+* For module "Friendly URLs"
+* by http://trickywebs.org.ua/
+*/
+function get_category_tree_mod() {
+	global $fc, $mc;
+
+	$fc = Array();
+	$mc = Array();
+
+	$q = db_query( "select categoryID, name, products_count, products_count_admin, parent, picture, subcount, uri FROM ".CATEGORIES_TABLE." ORDER BY sort_order, name" );
+	while( $row = db_fetch_row( $q ) ) {
+		$fc[$row['categoryID']] = $row;
+		$mc[$row['categoryID']] = (integer) $row['parent'];
+	}
+
+}
+
 
 ?>

@@ -7,7 +7,7 @@
 
 function newsGetNewsToCustomer()
 {
-        $q = db_query( "select NID, add_date, title, textToPrePublication from ".NEWS_TABLE." order by add_date DESC LIMIT 0,".CONF_NEWS_COUNT_IN_CUSTOMER_PART);
+        $q = db_query( "select NID, add_date, title, textToPrePublication, uri from ".NEWS_TABLE." order by add_date DESC LIMIT 0,".CONF_NEWS_COUNT_IN_CUSTOMER_PART);
         $data = array();
 
         while( $r=db_fetch_row($q) )
@@ -20,7 +20,7 @@ function newsGetNewsToCustomer()
 
 function newsGetPreNewsToCustomer()
 {
-        $q = db_query( "select NID, add_date, title, textToPrePublication from ".NEWS_TABLE." order by add_date DESC LIMIT 0,".CONF_NEWS_COUNT_IN_NEWS_PAGE);
+        $q = db_query( "select NID, add_date, title, textToPrePublication, uri from ".NEWS_TABLE." order by add_date DESC LIMIT 0,".CONF_NEWS_COUNT_IN_NEWS_PAGE);
         $data = array();
 
         while( $r=db_fetch_row($q) )
@@ -34,7 +34,7 @@ function newsGetPreNewsToCustomer()
 
 function newsGetFullNewsToCustomer($newsid)
 {
-        $q = db_query( "select add_date, title, textToPrePublication, textToPublication from ".NEWS_TABLE." where NID=".(int)$newsid);
+        $q = db_query( "select add_date, title, textToPrePublication, textToPublication, uri from ".NEWS_TABLE." where NID=".(int)$newsid);
         if  ( $r = db_fetch_row($q) )
         {
         $r["add_date"]=dtConvertToStandartForm($r["add_date"]);
@@ -45,7 +45,7 @@ function newsGetFullNewsToCustomer($newsid)
 
 function newsGetNewsToEdit($newsid)
 {
-        $q = db_query( "select add_date, title, textToPrePublication, textToPublication, textToMail from ".NEWS_TABLE." where NID=".(int)$newsid);
+        $q = db_query( "select add_date, title, textToPrePublication, textToPublication, textToMail, uri from ".NEWS_TABLE." where NID=".(int)$newsid);
         $r=db_fetch_row($q);
         $r["add_date"]=dtConvertToStandartForm($r["add_date"]);
         return $r;
@@ -64,7 +64,7 @@ function newsGetAllNews( $callBackParam, &$count_row, $navigatorParams = null )
                 $CountRowOnPage = 0;
         }
 
-        $q = db_query( "select NID, add_date, title from ".NEWS_TABLE." order by add_stamp DESC" );
+        $q = db_query( "select NID, add_date, title, uri from ".NEWS_TABLE." order by add_stamp DESC" );
 
         $i = 0;
         $data = array();
@@ -110,7 +110,7 @@ function newsDeleteNews( $newsid )
 
 function newsSendNews($newsid)
 {
-        $q = db_query( "select add_date, title, textToMail from ".NEWS_TABLE." where NID=".(int)$newsid );
+        $q = db_query( "select add_date, title, textToMail, uri from ".NEWS_TABLE." where NID=".(int)$newsid );
         $news = db_fetch_row( $q );
         $news["add_date"]=dtConvertToStandartForm($news["add_date"]);
         $q = db_query( "select Email from ".MAILING_LIST_TABLE );

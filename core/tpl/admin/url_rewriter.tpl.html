@@ -1,0 +1,134 @@
+<style type="text/css">{literal}
+
+  table.myForm label {
+    position: relative;
+    top: -3px;
+  }
+  
+  table.myForm {
+    border: #D6DFF7 solid 1px;
+    margin-bottom: 10px;
+  }
+
+{/literal}</style>
+
+{if $errorMsg}<div style="width:100%;border:#ff0000 solid 1px;margin:10px 0px;padding:5px 10px;font-weight:bold;color:#ff0000;">
+	ОШИБКА: {$errorMsg}
+</div>{/if}
+{if $resultMsg}<div style="width:100%;border:#6f8ddf solid 1px;margin:10px 0px;padding:5px 10px;font-weight:bold;color:#6f8ddf;">
+	{$resultMsg}
+</div>{/if}
+
+<!-- BEGIN Edit Object Form -->
+<form action="admin.php?dpt=modules&sub=url_rewriter" method="post" name="url_rewriter" id="url_rewriter">
+
+<input type="hidden" name="fACTION" value="url_rewriter">
+<input type="hidden" name="update_slug" value="0">
+<input type="hidden" name="itemID" value="0">
+
+<table class="myForm">
+  <tbody>
+	  <tr class="lineb">
+		  <td align="left">Редактирование адреса</td>
+	  </tr>
+	  <tr class="lins">
+		  <td align="left">
+			  <p>Название: <strong id="fuObjName"><span style="font-weight:normal;color:green;">/ выберите объект в списке ниже /</span></strong></p>
+			  <p>Адрес объекта: 
+				  <input name="newSlug" value="" size="40" class="textp" maxlength="255" type="text" title="Введите новый адрес">&nbsp;<a href="JavaScript:fu_translit()" title="Транслитерация названия"><small>[транслит]</small></a>&nbsp;<a href="JavaScript:fu_auto_ext()" title="Добавить расширение .html"><small>[.html]</small></a>&nbsp;<a href="JavaScript:fu_clear()" title="Очистить"><small>[x]</small></a>
+				  <input type="button" value="Задать адрес" onclick="JavaScript:fu_submit();" />
+			  </p>
+		  </td>
+	  </tr>
+	  <tr class="lins">
+		  <td align="left">&nbsp;</td>
+	  </tr>
+	  <tr class="lineb">
+		  <td align="left">Выберите объект для редактирования адреса</td>
+	  </tr>
+	  <tr class="lins">
+		  <td align="left">
+			  <select name="object" style="width:400px;" onchange="JavaScript:fu_change_category();">
+					  <option value="news"{if $object == 'news'} selected{/if}>&bull;&nbsp;Новости</option>
+					  <option value="pages"{if $object == 'pages'} selected{/if}>&bull;&nbsp;Страницы</option>
+					  <option value="cat_1"{if $object == 'cat_1' || !$object} selected{/if}>&bull;&nbsp;Каталог - Главная категория</option>
+					  {section name=i loop=$catTree}
+					  <option value="cat_{$catTree[i].categoryID}"{if $categoryID == $catTree[i].categoryID} selected{/if}>
+						  {if $catTree[i].level}{section name=j loop=$catTree max=$catTree[i].level+1}&nbsp;&nbsp;{/section}{else}&nbsp;&nbsp;{/if}
+						  {$catTree[i].name|escape:'html'} ({$catTree[i].products_count})
+					  </option>
+					  {/section}
+			  </select>
+		  </td>
+	  </tr>
+	  <tr class="lins">
+		  <td align="left">
+			  <table>
+				  <tr>
+					  <th>Объект</th>
+					  <th>Адрес</th>
+				  </tr>
+				  {section name=i loop=$objects}
+				  <tr>
+					  <td><a href="JavaScript:fu_select_item('{$objects[i].id}');">{if $objects[i].isFolder}[{/if}<span id="objectId_{$objects[i].id}_name">{$objects[i].name|escape:'html'}</span>{if $objects[i].isFolder}]{/if}</td>
+					  <td><i><span id="objectId_{$objects[i].id}_slug">{$objects[i].uri|escape:'html'}</span></i></td>
+				  </tr>
+				  {/section}
+			  </table>
+		  </td>
+	  </tr>
+  </tbody>
+</table>
+
+</form>
+<!-- END Edit Object Form -->
+
+
+<!-- BEGIN Auto-Transliterator Form -->
+<form action="admin.php?dpt=modules&sub=url_rewriter" method="post" name="url_transliterator" id="url_transliterator" onsubmit="JavaScript: return fu_transliterator_submit();">
+<input type="hidden" name="fACTION" value="url_transliterator">
+
+<table class="myForm">
+  <tbody>
+	  <tr class="lineb">
+		  <td align="left">
+		    Автоматическое назначение адресов<br />
+		    <span style="font-weight:normal;color:gray;">URL объектов будут заданы транслитерацией их названий</span>
+		    </td>
+	  </tr>
+	  <tr class="lins">
+		  <td align="left">
+        <strong>Генерировать адреса для:</strong><br />
+			  <input name="setCatSlugs" id="cb_setCatSlugs" type="checkbox" value="1"><label for="cb_setCatSlugs">каталога товаров</label><br />
+			  <input name="setPagesSlugs" id="cb_setPagesSlugs" type="checkbox" value="1"><label for="cb_setPagesSlugs">статических страниц</label><br />
+			  <input name="setNewsSlugs" id="cb_setNewsSlugs" type="checkbox" value="1"><label for="cb_setNewsSlugs">новостей</label><br />
+			  <br />
+			  <input name="rewriteExistingSlugs" id="cb_rewriteExistingSlugs" type="checkbox" value="1"><label for="cb_rewriteExistingSlugs">Перезаписать адреса, которые уже заданы</label><br />
+			  <input name="lowercase" id="cb_lowercase" type="checkbox" value="1"><label for="cb_lowercase">Не использовать верхний регистр в адресах</label><br />
+			  <input name="addHtmlExtension" id="cb_addHtmlExtension" type="checkbox" value="1" checked="checked"><label for="cb_addHtmlExtension">Добавлять расширение <i>.html</i> к адресам товаров, страниц, новостей</label><br />
+		  </td>
+	  </tr>
+	  <tr class="lins">
+		  <td align="left">
+    		<input type="submit" name="submit" value="Транслитерация" />
+		  </td>
+	  </tr>
+  </tbody>
+</table>
+
+</form>
+<!-- BEGIN Auto-Transliterator Form -->
+
+
+<table class="adn"><tr><td class="se6"></td></tr></table>
+<table class="adn">
+  <tr>
+    <td class="help"><span class="titlecol2">{$smarty.const.USEFUL_FOR_YOU}</span>
+<div class="helptext">
+<p>Модуль <strong>"Управление URL"</strong> позволяет <strong>задавать ЧПУ URL адреса</strong> для товаров магазина, а также для новостей и статических страниц.</p>
+<p>Для правильной работы модуля нужно модифицировать <strong>все используемые</strong> пользовательские шаблоны сайта, которые можно найти в папке <i>/core/tpl/user/{$smarty.const.CONF_DEFAULT_TEMPLATE}/</i></p>
+<p><strong>Как работать с модулем:</strong> выберите в выпадающем списке категорию, затем выберите ниже объект для редактирования адреса - категорию, товар, новость или страницу. В текстовом поле выше списка категорий задайте новый адрес объекта, который должен быть допустимым названием страницы сайта, например <i>izmeritelnye-pribory</i> или <i>izmeritelnye-pribory.html</i>. Адрес должен быть уникальным. <strong>Автоматическую транслитерацию адресов</strong> можно запустить сразу после установки модуля или после добавления в каталог значительного числа товаров (или страниц, новостей).</p>
+<p>Разработка и техническая поддержка модуля - <u><a href="http://trickywebs.org.ua/contacts.html?from=shopcmsAdmModFriendlyUrls" target="_blank" title="Внешняя ссылка, откроется в новом окне">http://trickywebs.org.ua/contacts.html</a></u></p>
+</div></td>
+  </tr>
+</table>

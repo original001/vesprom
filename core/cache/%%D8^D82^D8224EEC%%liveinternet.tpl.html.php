@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 15:25:44
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:03:34
          compiled from liveinternet.tpl.html */ ?>
 <div style="position: absolute; top: 12px; left: 12px;">
   <!--LiveInternet counter--><script type="text/javascript"><!--

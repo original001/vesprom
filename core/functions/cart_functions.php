@@ -295,7 +295,7 @@ function cartGetCartContent()
                                         SHOPPING_CART_ITEMS_TABLE." where ".
                                         " itemID=".(int)$cart_item["itemID"]);
                         $shopping_cart_item = db_fetch_row( $q_shopping_cart_item );
-                        $q_products = db_query("select name, Price, productID, min_order_amount, shipping_freight, free_shipping, product_code FROM ".
+                        $q_products = db_query("select name, Price, productID, min_order_amount, shipping_freight, free_shipping, product_code, categoryID, uri, uri_opt_val FROM ".
                                         PRODUCTS_TABLE." WHERE productID=".(int)$shopping_cart_item["productID"]);
                         if ( $product = db_fetch_row($q_products) )
                         {
@@ -304,6 +304,9 @@ function cartGetCartContent()
                                 $tmp =
                                         array(
                                                 "productID" =>  $product["productID"],
+                                                "categoryID" =>  $product["categoryID"],
+                                                "uri" =>  $product["uri"],
+                                                "uri_opt_val" =>  $product["uri_opt_val"],
                                                 "id"                =>        $cart_item["itemID"],
                                                 "name"                =>        $product["name"],
                                                 "quantity"        =>        $cart_item["Quantity"],
@@ -352,7 +355,7 @@ function cartGetCartContent()
                                                         $_SESSION["gids"][$j]);
 
 
-                                        $q = db_query("select name, Price, shipping_freight, free_shipping, product_code FROM ".
+                                        $q = db_query("select name, Price, shipping_freight, free_shipping, product_code, categoryID, uri, uri_opt_val FROM ".
                                                 PRODUCTS_TABLE." WHERE productID=".(int)$_SESSION["gids"][$j]);
                                         if ($r = db_fetch_row($q))
                                         {
@@ -368,6 +371,9 @@ function cartGetCartContent()
 
                                                 $tmp = array(
                                                                 "productID"        =>  $_SESSION["gids"][$j],
+                                                                "categoryID" =>  $r["categoryID"],
+                                                                "uri" =>  $r["uri"],
+                                                                "uri_opt_val" =>  $r["uri_opt_val"],
                                                                 "id"                =>        $id, //$_SESSION["gids"][$j],
                                                                 "name"                =>        $r[0],
                                                                 "quantity"        =>        $_SESSION["counts"][$j],
@@ -381,7 +387,7 @@ function cartGetCartContent()
                                                         $tmp["name"].="  (".$strOptions.")";
 
 
-                                                $q_product = db_query( "select min_order_amount, shipping_freight from ".PRODUCTS_TABLE.
+                                                $q_product = db_query( "select min_order_amount, shipping_freight, categoryID, uri, uri_opt_val from ".PRODUCTS_TABLE.
                                                                 " where productID=".
                                                                 (int)$_SESSION["gids"][$j] );
                                                 $product = db_fetch_row( $q_product );

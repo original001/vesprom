@@ -12,6 +12,9 @@
   {else}
   {$page_meta_tags}
   {/if}
+
+  {* Base href (for Friendly URLs) *}
+  <base href="http://{$smarty.const.CONF_SHOP_URL}/" />
   
   {* подключение стилей и иконки *}
   <link rel="stylesheet" href="data/{$smarty.const.TPL}/bootstrap.css" type="text/css" media="screen">

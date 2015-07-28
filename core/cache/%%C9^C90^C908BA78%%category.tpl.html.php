@@ -1,8 +1,7 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 15:25:44
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:03:28
          compiled from category.tpl.html */ ?>
-<div class="desc"><?php echo $this->_tpl_vars['catrescur'][$this->_sections['r']['index']]; ?>
-
-        </div>
+<?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 'fu_make_url', 'category.tpl.html', 11, false),)), $this); ?>
 
 <?php $this->assign('preheader', "<a href='".(@ADMIN_FILE)."?categoryID=".($this->_tpl_vars['selected_category']['categoryID'])."&amp;eaction=cat' title='".(@ADMIN_ADMIN_MENUNEW1)."' style='float: right;'>+</a>"); ?>
 <?php if ($this->_tpl_vars['isadmin'] == 'yes'): ?><?php $this->assign('postheader', ($this->_tpl_vars['preheader']).($this->_tpl_vars['categoryName'])); ?><?php else: ?><?php $this->assign('postheader', $this->_tpl_vars['categoryName']); ?><?php endif; ?>
@@ -38,9 +37,8 @@ $this->_sections['i']['index_prev'] = $this->_sections['i']['index'] - $this->_s
 $this->_sections['i']['index_next'] = $this->_sections['i']['index'] + $this->_sections['i']['step'];
 $this->_sections['i']['first']      = ($this->_sections['i']['iteration'] == 1);
 $this->_sections['i']['last']       = ($this->_sections['i']['iteration'] == $this->_sections['i']['total']);
-?><?php if ($this->_tpl_vars['product_category_path'][$this->_sections['i']['index']]['categoryID'] != 1): ?> &nbsp;/&nbsp; <a href="<?php if (@CONF_MOD_REWRITE == 1): ?>category_<?php echo $this->_tpl_vars['product_category_path'][$this->_sections['i']['index']]['categoryID']; ?>
-.html<?php else: ?>index.php?categoryID=<?php echo $this->_tpl_vars['product_category_path'][$this->_sections['i']['index']]['categoryID']; ?>
-<?php endif; ?>"><?php echo $this->_tpl_vars['product_category_path'][$this->_sections['i']['index']]['name']; ?>
+?><?php if ($this->_tpl_vars['product_category_path'][$this->_sections['i']['index']]['categoryID'] != 1): ?> &nbsp;/&nbsp; <a href="<?php echo fu_make_url($this->_tpl_vars['product_category_path'][$this->_sections['i']['index']]); ?>
+"><?php echo $this->_tpl_vars['product_category_path'][$this->_sections['i']['index']]['name']; ?>
 </a><?php endif; ?><?php endfor; endif; ?></div>
  
 

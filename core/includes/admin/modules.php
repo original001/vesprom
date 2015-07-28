@@ -20,7 +20,8 @@
                         array("id"=>"shipping", "name"=>ADMIN_STRING_SHIPPING_MODULES),
                         array("id"=>"payment", "name"=>ADMIN_STRING_PAYMENT_MODULES),
                         array("id"=>"linkexchange", "name"=>ADMIN_STRING_MODULES_LINKEXCHANGE),
-                        array("id"=>"yandex", "name"=>"Яндекс.Маркет" )
+			array("id"=>"url_rewriter", "name"=>"ChPU adresses"),
+			array("id"=>"yandex", "name"=>"Яндекс.Маркет" )
                 )
         );
         add_department($admin_dpt);

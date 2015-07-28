@@ -34,7 +34,7 @@
       {assign var="paddingzn" value=8}
       {section name=j loop=$pricelist_elements max=($pricelist_elements[i][2]-2)}{assign var="paddingzn" value="`$paddingzn+8`"}{/section}
             <tr>
-              <td {if $pricelist_elements[i][4] ne 1} colspan="{if $smarty.const.CONF_DISPLAY_PRCODE eq 1}3{else}2{/if}" {/if} {if $pricelist_elements[i][4] ne 1} class="lt" {/if} width="99%" style="padding-left: 15px"><a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}{if $pricelist_elements[i][4] eq 1}product_{else}category_{/if}{$pricelist_elements[i][0]}.html{else}index.php?{if $pricelist_elements[i][4] eq 1}productID{else}categoryID{/if}={$pricelist_elements[i][0]}{/if}" class="noline">{$pricelist_elements[i][1]}</a></td>     
+              <td {if $pricelist_elements[i][4] ne 1} colspan="{if $smarty.const.CONF_DISPLAY_PRCODE eq 1}3{else}2{/if}" {/if} {if $pricelist_elements[i][4] ne 1} class="lt" {/if} width="99%" style="padding-left: 15px"><a href="{$pricelist_elements[i]|@fu_make_url}" class="noline">{$pricelist_elements[i][1]}</a></td>     
         {if ($pricelist_elements[i][4] eq 1) && ($currencies_count ne 0)}<td nowrap="nowrap">{$pricelist_elements[i][5]}</td>{/if}
         {if ($pricelist_elements[i][4] eq 1) && ($smarty.const.CONF_DISPLAY_PRCODE eq 1)}
         <td nowrap="nowrap">{if $pricelist_elements[i][7]} {$pricelist_elements[i][7]}{/if}</td>

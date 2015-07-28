@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 22:34:54
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:02:56
          compiled from show_aux_page.tpl.html */ ?>
 
 <div class="bread"><a href="/">Главная </a>&nbsp;/&nbsp; <?php $this->assign('preheader', "<a href='".(@ADMIN_FILE)."?dpt=custord&amp;sub=aux_pages&amp;edit=".($this->_tpl_vars['show_aux_page'])."' title='".(@EDIT_BUTTON)."' style='float: right;'>+</a>"); ?>

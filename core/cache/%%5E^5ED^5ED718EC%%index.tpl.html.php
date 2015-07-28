@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 15:25:44
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:03:34
          compiled from index.tpl.html */ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -87,7 +87,7 @@ unset($_smarty_tpl_vars);
 <?php endif; ?>
     <div class="navi">
       <ul>
-        <li class="navi3"><a href="page_1.html">О компании</a></li>
+        <li class="navi3"><a href="pages/o-kompanii">О компании</a></li>
         <li class="navi1 dropdown">
           <a data-toggle="dropdown" data-hover="dropdown" href="#" style="line-height:80px;">Каталог</a>
           <?php $_smarty_tpl_vars = $this->_tpl_vars;
@@ -96,7 +96,7 @@ $this->_tpl_vars = $_smarty_tpl_vars;
 unset($_smarty_tpl_vars);
  ?></li>
         <li class="navi2"><a href="price.html">Прайс-лист</a></li>
-        <li class="navi4"><a href="page_2.html">Контакты</a></li>
+        <li class="navi4"><a href="pages/kontakty">Контакты</a></li>
       </ul>
     </div>
 

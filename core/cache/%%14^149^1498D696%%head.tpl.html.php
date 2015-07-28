@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 15:25:44
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:03:34
          compiled from head.tpl.html */ ?>
 <head>  
   
@@ -17,6 +17,9 @@
   <?php echo $this->_tpl_vars['page_meta_tags']; ?>
 
   <?php endif; ?>
+
+    <base href="http://<?php echo @CONF_SHOP_URL; ?>
+/" />
   
     <link rel="stylesheet" href="data/<?php echo @TPL; ?>
 /bootstrap.css" type="text/css" media="screen">

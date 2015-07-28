@@ -172,7 +172,7 @@
 
                                         while ($row = db_fetch_row($q))
                                         {
-                                                $p = db_query("select productID, name, Price FROM ".PRODUCTS_TABLE." WHERE productID=".$row[0]." and enabled=1");
+                                                $p = db_query("select productID, categoryID, name, Price, uri, uri_opt_val FROM ".PRODUCTS_TABLE." WHERE productID=".$row[0]." and enabled=1");
                                                 if ($r = db_fetch_row($p))
                                                 {
                                                   $r["Price"] = show_price($r["Price"]);

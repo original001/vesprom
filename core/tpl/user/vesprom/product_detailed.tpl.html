@@ -30,7 +30,7 @@
 </style>
 
 <div class="bread_full">
-        {if $smarty.const.CONF_USE_DISCUSS eq 1}<span style="float: right;"><a href="index.php?productID={$product_info.productID}&amp;discuss=yes">{$smarty.const.DISCUSS_ITEM_LINK}</a> ({$product_reviews_count} {$smarty.const.POSTS_FOR_ITEM_STRING})</span>{/if}<a href="{$smarty.const.CONF_FULL_SHOP_URL}">{$smarty.const.LINK_TO_HOMEPAGE}</a>{section name=i loop=$product_category_path}{if $product_category_path[i].categoryID != 1} &nbsp;/&nbsp; <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}category_{$product_category_path[i].categoryID}.html{else}index.php?categoryID={$product_category_path[i].categoryID}{/if}">{$product_category_path[i].name}</a>{/if}{/section} <p> <h3>
+        {if $smarty.const.CONF_USE_DISCUSS eq 1}<span style="float: right;"><a href="index.php?productID={$product_info.productID}&amp;discuss=yes">{$smarty.const.DISCUSS_ITEM_LINK}</a> ({$product_reviews_count} {$smarty.const.POSTS_FOR_ITEM_STRING})</span>{/if}<a href="{$smarty.const.CONF_FULL_SHOP_URL}">{$smarty.const.LINK_TO_HOMEPAGE}</a>{section name=i loop=$product_category_path}{if $product_category_path[i].categoryID != 1} &nbsp;/&nbsp; <a href="{$product_category_path[i]|@fu_make_url}">{$product_category_path[i].name}</a>{/if}{/section} <p> <h3>
         {assign var="preheader" value="<a href='`$smarty.const.ADMIN_FILE`?productID=`$product_info.productID`&amp;eaction=prod' title='`$smarty.const.STRING_EDITPR`' style='float: right;'>+</a>"}
 {if $isadmin eq "yes"}{assign var="postheader" value=`$preheader``$product_info.name`}{else}{assign var="postheader" value=$product_info.name}{/if}
           {include file="header.tpl.html" header=$postheader}</h3>
@@ -167,7 +167,7 @@
 
 <table cellspacing="0" cellpadding="0" width="100%" class="print">
   <tr>
-    <td class="cbt" align="left">{if $smarty.const.CONF_USE_DISCUSS eq 1}<span style="float: right;"><a href="index.php?productID={$product_info.productID}&amp;discuss=yes">{$smarty.const.DISCUSS_ITEM_LINK}</a> ({$product_reviews_count} {$smarty.const.POSTS_FOR_ITEM_STRING})</span>{/if}<a href="{$smarty.const.CONF_FULL_SHOP_URL}">{$smarty.const.LINK_TO_HOMEPAGE}</a>{section name=i loop=$product_category_path}{if $product_category_path[i].categoryID != 1} / <a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}category_{$product_category_path[i].categoryID}.html{else}index.php?categoryID={$product_category_path[i].categoryID}{/if}">{$product_category_path[i].name}</a>{/if}{/section}</td>
+    <td class="cbt" align="left">{if $smarty.const.CONF_USE_DISCUSS eq 1}<span style="float: right;"><a href="index.php?productID={$product_info.productID}&amp;discuss=yes">{$smarty.const.DISCUSS_ITEM_LINK}</a> ({$product_reviews_count} {$smarty.const.POSTS_FOR_ITEM_STRING})</span>{/if}<a href="{$smarty.const.CONF_FULL_SHOP_URL}">{$smarty.const.LINK_TO_HOMEPAGE}</a>{section name=i loop=$product_category_path}{if $product_category_path[i].categoryID != 1} / <a href="{$product_category_path[i]|@fu_make_url}">{$product_category_path[i].name}</a>{/if}{/section}</td>
   </tr>
 </table>
 <table cellspacing="0" cellpadding="0" width="100%">
@@ -393,7 +393,7 @@ GetCurrentCurrency();
             {/if}
             <table cellspacing="0" cellpadding="0">
               <tr>
-                <td align="left"><a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}product_{$product_related[i].productID}.html{else}index.php?productID={$product_related[i].productID}{/if}">{$product_related[i].name}</a></td>
+                <td align="left"><a href="{$product_related[i]|@fu_make_url}">{$product_related[i].name}</a></td>
                 <td align="left" class="price">&nbsp;&nbsp;&nbsp;{$product_related[i].Price}</td>
               </tr>
             </table>

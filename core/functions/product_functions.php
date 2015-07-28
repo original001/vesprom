@@ -303,6 +303,7 @@ function AddProduct(
                                 xToText(trim($title))."' ".
                         ");" );
         $insert_id = db_insert_id();
+        
         if ( $updateGCV == 1 && CONF_UPDATE_GCV == '1') update_psCount(1);
         return $insert_id;
 }
@@ -647,7 +648,7 @@ function prdGetProductByCategory( $callBackParam, &$count_row, $navigatorParams 
                 $q=db_query("select categoryID, name, brief_description, ".
                                 " customers_rating, Price, in_stock, ".
                                 " customer_votes, list_price, ".
-                                " productID, default_picture, sort_order, items_sold, enabled, product_code from ".PRODUCTS_TABLE.
+                                " productID, default_picture, sort_order, items_sold, enabled, product_code, uri, uri_opt_val from ".PRODUCTS_TABLE.
                                 " where categoryID=".(int)$categoryID." order by ".CONF_DEFAULT_SORT_ORDER);
                 $i=0;
                 while( $row=db_fetch_row($q) )
@@ -730,53 +731,7 @@ function _getConditionWithCategoryConj( $condition, $categoryID ) //fetch produc
 // Remarks
 // Returns        returns true if product matches to extra parametr template
 //                        false otherwise
-function _testExtraParametrsTemplate( $productID, &$template ){
-
-        # BEGIN ExtraFilter
-if (isset($_GET["extrafilter"])){
-                global $efTemplate;
-                $variants = array();
-                $filter_type = array();
-                foreach( $efTemplate as $key => $item )
-                        if((string)$key != "categoryID" && isset($item["optionID"]))
-                                {
-                                if (is_array($item['value'])) $variants[$item["optionID"]] = $item['value'];
-                                elseif ($item['value']>0) $variants[$item["optionID"]][] = $item['value'];
-                                if (isset($item['filter_type'])) $filter_type[$item["optionID"]] = $item['filter_type'];
-                                }
-
-                if (!$count = count($variants)) return true;
-
-                $filter = array();
-                foreach( $variants as $key => $item )
-                 {
-                 if (isset($filter_type[$key]))
-                         {
-                                switch ($filter_type[$key])
-                                        {
-                                        case '0':
-                                                $filter[] = "pos.variantID IN (".implode(",",$item).")";
-                                                break;
-                                        case '1':
-                                                $filter[] = "pos.optionID=".$key." AND povv.option_value LIKE '%".$item[0]."%'";
-                                                break;
-                                        case '2':
-                                                if ($item[2] == 'on') $count--;
-                                                else $filter[] = "pos.optionID=".$key." AND FLOOR(povv.option_value)>=".$item[0]." AND CEIL(povv.option_value)<=".$item[1];
-                                                break;
-                                        case '3':
-                                                $filter[] = "pos.variantID IN (".implode(',',$item).")";
-                                                break;
-                                        }                               
-                                }
-                        }
-                $row=db_fetch_row(db_query("SELECT count(DISTINCT pos.optionID) AS count FROM ".PRODUCTS_OPTIONS_SET_TABLE." AS pos
-                                                                        LEFT JOIN ".PRODUCTS_OPTIONS_VALUES_VARIANTS_TABLE." AS povv USING (variantID)
-                                                                        WHERE productID=".$productID. " AND (".implode(" OR ",$filter).")"));
-
-                return $row['count'] == $count;
-}else{
-# END ExtraFilter
+function _testExtraParametrsTemplate( $productID, &$template, $wholeMatch=1 ){
 
         // get category ID
         $categoryID = $template["categoryID"];
@@ -788,10 +743,10 @@ if (isset($_GET["extrafilter"])){
                 if((string)$key == "categoryID" ) continue;
 
                 // get value to search
-                if ( $item['set_arbitrarily'] == 1 ){
+                /*if ( $item['set_arbitrarily'] == 1 ){
 
                         $valueFromForm = $item["value"];
-                }else{
+                }else*/{
 
                         if ( (int)$item["value"] == 0 ) continue;
 
@@ -840,18 +795,22 @@ if (isset($_GET["extrafilter"])){
                         $existFlag = false;
                         $vcount = count($valueFromDataBase);
                         for ($v=0; $v<$vcount; $v++) {
-                                if(strstr(strtolower((string)trim($valueFromDataBase[$v])),strtolower((string)trim($valueFromForm)))){
-                                        $existFlag = true;
-                                        break;
-                                }
+                        		if( $wholeMatch ) {
+		                            if( strtolower((string)trim($valueFromDataBase[$v])) == strtolower((string)trim($valueFromForm)) ){
+		                                    $existFlag = true;
+		                                    break;
+		                            }
+                        		} else {
+		                            if(strstr(strtolower((string)trim($valueFromDataBase[$v])),strtolower((string)trim($valueFromForm)))){
+		                                    $existFlag = true;
+		                                    break;
+		                            }
+                        		}
                         }
                         if ( !$existFlag ) return false;
                 }
         }
         return true;
-        # BEGIN ExtraFilter
-}
-# END ExtraFilter
 }
 
 
@@ -1073,7 +1032,7 @@ function prdSearchProductByTemplateAdmin($callBackParam, &$count_row, $navigator
                                  " customers_rating, Price, in_stock, ".
                                 " customer_votes, list_price, ".
                                 " productID, default_picture, sort_order, items_sold, enabled, ".
-                                " product_code, description, shipping_freight, viewed_times, min_order_amount from ".PRODUCTS_TABLE." ".
+                                " product_code, description, shipping_freight, viewed_times, min_order_amount, uri, uri_opt_val from ".PRODUCTS_TABLE." ".
                                 $where_clause." ".$order_by_clause.$limit_clause;
 
         $q = db_query( $sqlQuery );
@@ -1113,6 +1072,7 @@ function prdSearchProductByTemplateAdmin($callBackParam, &$count_row, $navigator
                                 $row["product_code"]      = $row["product_code"];
                                 $row["viewed_times"]      = $row["viewed_times"];
                                 $row["items_sold"]        = $row["items_sold"];
+                                $row["uri"]               = urlencode( $row["uri"] );
                                 $result[] = $row;
                         }
                         $i++;
@@ -1148,6 +1108,14 @@ function prdSearchProductByTemplateAdmin($callBackParam, &$count_row, $navigator
 // Returns
 function prdSearchProductByTemplate($callBackParam, &$count_row, $navigatorParams = null )
 {
+		//print_r($callBackParam);
+
+		# Filter modified
+		if( isset( $_GET['advanced_search_in_category'] ) && $_GET['advanced_search_in_category'] ) {
+			$callBackParam['search_simple'] = $callBackParam['name'];
+			unset( $callBackParam['name'] );
+		}
+
         // navigator params
         if ( $navigatorParams != null )
         {
@@ -1203,9 +1171,9 @@ function prdSearchProductByTemplate($callBackParam, &$count_row, $navigatorParam
 
         $where_clause = "";
 
-        if ( isset($callBackParam["search_simple"]) )
+        if ( isset($callBackParam["search_simple"]) || $callBackParam["search_in_current_category"] )
         {
-                if (!count($callBackParam["search_simple"])) //empty array
+                if (!count($callBackParam["search_simple"]) && !$callBackParam["search_in_current_category"] ) //empty array
                 {
                         $where_clause = " where 0";
                 }
@@ -1219,6 +1187,12 @@ function prdSearchProductByTemplate($callBackParam, &$count_row, $navigatorParam
                                                  "   LOWER(description) LIKE '%".xEscSQL(trim(strtolower($callBackParam["search_simple"][$n])))."%' OR ".
                                                  "   LOWER(product_code) LIKE '%".xEscSQL(trim(strtolower($callBackParam["search_simple"][$n])))."%' OR ".
                                                  "   LOWER(brief_description) LIKE '%".xEscSQL(trim(strtolower($callBackParam["search_simple"][$n])))."%' ) ";
+                        }
+                        
+                        if( $callBackParam["search_in_current_category"] ) {
+                            //if ( $where_clause != "" ) $where_clause .= " AND ";
+                            $where_clause = _getConditionWithCategoryConjWithSubCategories( $where_clause,
+                                                                                    $callBackParam["categoryID"] );
                         }
 
                         if ( $where_clause != "" )
@@ -1302,7 +1276,7 @@ function prdSearchProductByTemplate($callBackParam, &$count_row, $navigatorParam
         }
         
         // categoryID
-                if ( isset($callBackParam["categoryID"]) )
+                if ( !isset( $_GET['advanced_search_in_category'] ) && isset($callBackParam["categoryID"]) )
                 {
                         $searchInSubcategories = false;
                         if ( isset($callBackParam["searchInSubcategories"]) )
@@ -1366,9 +1340,10 @@ function prdSearchProductByTemplate($callBackParam, &$count_row, $navigatorParam
                                  " customers_rating, Price, in_stock, ".
                                 " customer_votes, list_price, ".
                                 " productID, default_picture, sort_order, items_sold, enabled, ".
-                                " product_code, description, shipping_freight, viewed_times, min_order_amount from ".PRODUCTS_TABLE." ".
+                                " product_code, description, shipping_freight, viewed_times, min_order_amount, uri, uri_opt_val from ".PRODUCTS_TABLE." ".
                                 $where_clause." ".$order_by_clause.$limit_clause;
 
+		//echo $sqlQuery."\n<br/>\n";
         $q = db_query( $sqlQuery );
         $result = array();
         $i = 0;
@@ -1406,6 +1381,7 @@ function prdSearchProductByTemplate($callBackParam, &$count_row, $navigatorParam
                                 $row["product_code"]      = $row["product_code"];
                                 $row["viewed_times"]      = $row["viewed_times"];
                                 $row["items_sold"]        = $row["items_sold"];
+                                $row["uri"]               = urlencode( $row["uri"] );
                                 $result[] = $row;
                         }
                         $i++;
@@ -1442,5 +1418,6 @@ function prdGetMetaTags( $productID ) //gets META keywords and description - an 
 
         return $res;
 }
+
 
 ?>

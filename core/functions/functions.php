@@ -1,6 +1,6 @@
 <?php
   #####################################
-  # ShopCMS: Ã‘ÃªÃ°Ã¨Ã¯Ã² Ã¨Ã­Ã²Ã¥Ã°Ã­Ã¥Ã²-Ã¬Ã Ã£Ã Ã§Ã¨Ã­Ã 
+  # ShopCMS: Ñêðèïò èíòåðíåò-ìàãàçèíà
   # Copyright (c) by ADGroup
   # http://shopcms.ru
   #####################################
@@ -345,7 +345,7 @@
 
   function ShowNavigator($a, $offset, $q, $path, &$out)
   {
-      //shows navigator [prev] 1 2 3 4 â€¦ [next]
+      //shows navigator [prev] 1 2 3 4 … [next]
       //$a - count of elements in the array, which is being navigated
       //$offset - current offset in array (showing elements [$offset ... $offset+$q])
       //$q - quantity of items per page
@@ -356,7 +356,7 @@
       {
 
           //[prev]
-          if ($offset > 0) $out .= "<a href=\"".$path."offset=".($offset - $q)."\">&lt;"."".
+          if ($offset > 0) $out .= "<a href=\"".$path."offset=".($offset - $q)."\">&lt;&lt; ".STRING_PREVIOUS.
                   "</a>&nbsp;&nbsp;";
 
           //digital links
@@ -426,17 +426,21 @@
 
           //[next]
           if (strcmp($offset, "show_all"))
-              if ($offset < $a - $q) $out .= "<a href=\"".$path."offset=".($offset + $q)."\">"."".
-                      "&gt;</a>&nbsp;&nbsp;";
+              if ($offset < $a - $q) $out .= "<a href=\"".$path."offset=".($offset + $q)."\">".STRING_NEXT.
+                      " &gt;&gt;</a>&nbsp;&nbsp;";
 
-          
+          //[show all]
+          if (strcmp($offset, "show_all")) $out .= "|&nbsp;&nbsp;<a href=\"".$path."show_all=yes\">".
+                  STRING_SHOWALL."</a>";
+          else  $out .= "|&nbsp;&nbsp;<b>".STRING_SHOWALL."</b>";
 
       }
   }
 
+  // BEGIN Friendly URLs
   function ShowNavigatormd($a, $offset, $q, $path, &$out)
   {
-      //shows navigator [prev] 1 2 3 4 â€¦ [next]
+      //shows navigator [prev] 1 2 3 4 … [next]
       //$a - count of elements in the array, which is being navigated
       //$offset - current offset in array (showing elements [$offset ... $offset+$q])
       //$q - quantity of items per page
@@ -447,7 +451,7 @@
       {
 
           //[prev]
-          if ($offset > 0) $out .= "<a href=\"".$path."offset_".($offset - $q).".html\">&lt;".''.
+          if ($offset > 0) $out .= "<a href=\"".$path."offset_".($offset - $q)."\">&lt;&lt; ".STRING_PREVIOUS.
                   "</a>&nbsp;&nbsp;";
 
           //digital links
@@ -463,7 +467,7 @@
           {
               if ($min >= 1)
               { //link on the 1st page
-                  $out .= "<a href=\"".$path."offset_0.html\">1</a>&nbsp;&nbsp;";
+                  $out .= "<a href=\"".$path."offset_0\">1</a>&nbsp;&nbsp;";
                   if ($min != 1)
                   {
                       $out .= "...&nbsp;&nbsp;";
@@ -477,7 +481,7 @@
               $m = $i * $q + $q;
               if ($m > $a) $m = $a;
 
-              $out .= "<a href=\"".$path."offset_".($i * $q).".html\">".($i + 1)."</a>&nbsp;&nbsp;";
+              $out .= "<a href=\"".$path."offset_".($i * $q)."\">".($i + 1)."</a>&nbsp;&nbsp;";
           }
 
           //# of current page
@@ -491,7 +495,7 @@
           {
               $min = $q;
               if ($min > $a) $min = $a;
-              $out .= "<a href=\"".$path."offset_0.html\">1</a>&nbsp;&nbsp;";
+              $out .= "<a href=\"".$path."offset_0\">1</a>&nbsp;&nbsp;";
           }
 
           //not more than 5 links to the right
@@ -506,24 +510,28 @@
               $m = $i * $q + $q;
               if ($m > $a) $m = $a;
 
-              $out .= "<a href=\"".$path."offset_".($i * $q).".html\">".($i + 1)."</a>&nbsp;&nbsp;";
+              $out .= "<a href=\"".$path."offset_".($i * $q)."\">".($i + 1)."</a>&nbsp;&nbsp;";
           }
 
           if (ceil($min * $q) < $a)
           { //the last link
               if ($min * $q < $a - $q) $out .= "... &nbsp;&nbsp;";
-              $out .= "<a href=\"".$path."offset_".($a - $a % $q).".html\">".(floor($a / $q) + 1)."</a>&nbsp;&nbsp;";
+              $out .= "<a href=\"".$path."offset_".($a - $a % $q)."\">".(floor($a / $q) + 1)."</a>&nbsp;&nbsp;";
           }
 
           //[next]
           if (strcmp($offset, "show_all"))
-              if ($offset < $a - $q) $out .= "<a href=\"".$path."offset_".($offset + $q).".html\">".
-                      ''."&gt;</a>&nbsp;&nbsp;";
+              if ($offset < $a - $q) $out .= "<a href=\"".$path."offset_".($offset + $q)."\">".
+                      STRING_NEXT." &gt;&gt;</a>&nbsp;&nbsp;";
 
-          
+          //[show all]
+          if (strcmp($offset, "show_all")) $out .= "|&nbsp;&nbsp;<noindex><a href=\"".$path."show_all.html\" rel=\"nofollow\">".
+                  STRING_SHOWALL."</a></noindex>";
+          else  $out .= "|&nbsp;&nbsp;<b>".STRING_SHOWALL."</b>";
 
       }
   }
+  // END Friendly URLs
 
   function GetNavigatorHtmlmd($url, $countRowOnPage = CONF_PRODUCTS_PER_PAGE, $callBackFunction, $callBackParam,
       &$tableContent, &$offset, &$count, $urlflag)

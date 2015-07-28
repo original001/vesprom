@@ -97,3 +97,11 @@ rewrite ^/category_([0-9]+)_offset_([0-9]+)\.html$ /index.php?categoryID=$1&offs
 rewrite ^/category_([0-9]+)_show_all\.html$ /index.php?categoryID=$1&show_all=yes  last;
 rewrite ^/show_news_([0-9]+)\.html$ /index.php?fullnews=$1  last;
 </IfModule>
+
+# BEGIN Human friendly URL's
+RewriteRule ^catalog/([^/]*)$ index.php?uri=$1&uriFor=category [L]
+RewriteRule ^catalog/([^/]*)/([^/]*)/([^/]*)$ index.php?uri=$3&uriFor=product [L]
+RewriteRule ^catalog/([^/]*)/([^/]*)$ index.php?uri=$2&uriFor=product [L]
+RewriteRule ^news/([^/]*)$ index.php?uri=$1&uriFor=news [L]
+RewriteRule ^pages/([^/]*)$ index.php?uri=$1&uriFor=pages [L]
+# END Human friendly URL's

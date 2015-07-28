@@ -20,6 +20,7 @@
         return $selected_currency_details[0];
       }
 
+// BEGIN Friendly URLs Patch
       function pricessCategories($parent,$level)
       {
 
@@ -28,7 +29,7 @@
                 $out = array();
                 $cnt = 0;
 
-                $q1 = db_query("select categoryID, name from ".CATEGORIES_TABLE.
+                $q1 = db_query("select categoryID, name, uri from ".CATEGORIES_TABLE.
                         " where parent=".(int)$parent." order by sort_order, name");
                 while ($row = db_fetch_row($q1))
                 {
@@ -43,6 +44,7 @@
                         $c = dechex($r).dechex($g).dechex($b); //final color
 
                         //add category to the output
+                        $out[$cnt] = $row;
                         $out[$cnt][0] = $row[0];
                         $out[$cnt][1] = $row[1];
                         $out[$cnt][2] = $level;
@@ -69,7 +71,7 @@
                         }
 
                         //add products
-                        $q = db_query("select productID, name, Price, in_stock, product_code from ".PRODUCTS_TABLE.
+                        $q = db_query("select productID, name, Price, in_stock, product_code, uri, categoryID from ".PRODUCTS_TABLE.
                                 " where categoryID=".$row[0]." and Price>=0 and enabled=1 ".
                                 $order_clause );
                         while ($row1 = db_fetch_row($q))
@@ -82,6 +84,7 @@
                                         $row1[2] = show_price($row1[2], 0, false);
                                 }
 
+                                $out[$cnt] = $row1;
                                 $out[$cnt][0] = $row1[0];
                                 $out[$cnt][1] = $row1[1];
                                 $out[$cnt][2] = $level;
@@ -109,6 +112,8 @@
                 return $out;
 
         } //pricessCategories
+// END Friendly URLs Patch
+
 
         function _sortPriceListSetting( &$smarty, $urlToSort )
         {

@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2015-07-17 15:39:20
+<?php /* Smarty version 2.6.22, created on 2015-07-28 23:01:40
          compiled from admin/menu.tpl.html */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('modifier', 'set_query', 'admin/menu.tpl.html', 317, false),array('modifier', 'replace', 'admin/menu.tpl.html', 409, false),)), $this); ?>
@@ -890,6 +890,8 @@ $this->_sections['i']['last']       = ($this->_sections['i']['iteration'] == $th
 <table class="adn topj"><tr><td><img src="data/admin/drs.gif" alt=""></td><td width="100%"><a href="<?php echo @ADMIN_FILE; ?>
 ?dpt=custord&amp;sub=affiliate"><?php echo @STRING_AFFILIATE_PROGRAM; ?>
 </a></td></tr></table>
+<table class="adn topj"><tr><td><img src="data/admin/drs.gif" alt=""></td><td width="100%"><a href="<?php echo @ADMIN_FILE; ?>
+?dpt=modules&amp;sub=url_rewriter">Cpu Adresses</a></td></tr></table>
 </div></td>
                                </tr>
                                <tr>
@@ -964,3 +966,4 @@ $this->_sections['i']['last']       = ($this->_sections['i']['iteration'] == $th
 megamenu();
 </SCRIPT>
 '; ?>
+
