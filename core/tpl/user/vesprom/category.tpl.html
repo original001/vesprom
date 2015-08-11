@@ -11,27 +11,6 @@
     <div class="bread">{if $smarty.const.CONF_SHOW_COUNTPROD eq 1}<span style="float: right;">{$smarty.const.STRING_COUNTPROD}: {$products_to_showc}</span>{/if}<a href="{$smarty.const.CONF_FULL_SHOP_URL}">{$smarty.const.LINK_TO_HOMEPAGE}</a>{section name=i loop=$product_category_path}{if $product_category_path[i].categoryID != 1} &nbsp;/&nbsp; <a href="{$product_category_path[i]|@fu_make_url}">{$product_category_path[i].name}</a>{/if}{/section}</div>
  
 
-{* вывод описания подкатегорий (если есть) *}
-
-{if $catrescur}
-{section name=r loop=$catrescur}
-{if $catrescur[r][3] != ""}
-{if $smarty.const.CONF_MOD_REWRITE eq 1}
-{assign var="tlink" value="<a href='category_`$catrescur[r].categoryID`.html'>`$catrescur[r].name`</a>"}
-{else}
-{assign var="tlink" value="<a href='index.php?categoryID=`$catrescur[r].categoryID`'>`$catrescur[r].name`</a>"}
-{/if}
-
-<a href="{if $smarty.const.CONF_MOD_REWRITE eq 1}category_{$catrescur[r].categoryID}.html{else}index.php?categoryID={$catrescur[r].categoryID}{/if}" class="content">
-        <div class="header">{$catrescur[r].name}</div>
-        <div class="img"><img src="data/category/{$catrescur[r].picture}" alt="{$catrescur[r].name}" title="{$catrescur[r].name}"></div>
-        <div class="desc">{$catrescur[r].description}
-        </div>
-</a>
-
-{/if}
-{/section}
-{/if}
 
 {if $products_to_show}
 
@@ -72,6 +51,13 @@
   {else}{/if}
   {/section}
 
+  {* вывод описания подкатегорий (если есть) *}
+
+  <div class="text-box">
+    {if $selected_category.description}
+      {$selected_category.description}
+    {/if}
+  </div>
 
 {* форма навигации по страницам *}
 

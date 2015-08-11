@@ -93,7 +93,7 @@ a:focus {
 .navi4:hover {
 	background: #772222;
 }
-.navi1 > a {
+.navi2 > a {
 	background: url('img/arrow_white.png') no-repeat 50% 95% transparent;
 }
 .dropdown-menu li a {
@@ -808,3 +808,7 @@ table.gre td.lt{font-weight:bold;background:#E4E6E9}
 	-moz-border-radius: 5px;
 	border-radius: 5px;
   }
+ .text-box {
+ 	padding: 30px 30px 0;
+ 	float: left;
+ }

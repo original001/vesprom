@@ -76,11 +76,11 @@
 {/if}
     <div class="navi">
       <ul>
-        <li class="navi3"><a href="pages/o-kompanii">О компании</a></li>
-        <li class="navi1 dropdown">
+        <li class="navi1"><a href="pages/o-kompanii">О компании</a></li>
+        <li class="navi2 dropdown">
           <a data-toggle="dropdown" data-hover="dropdown" href="#" style="line-height:80px;">Каталог</a>
           {include file="blocks/category_tree.tpl.html"}</li>
-        <li class="navi2"><a href="price.html">Прайс-лист</a></li>
+        <li class="navi3"><a href="price.html">Прайс-лист</a></li>
         <li class="navi4"><a href="pages/kontakty">Контакты</a></li>
       </ul>
     </div>
@@ -92,8 +92,10 @@
       {if $main_content_template eq "home.tpl.html"}
       {include file="blocks/category_center.php"}{/if}
         </div>
+        <div class="text-box">
+          {include file="blocks.tpl.html" binfo=$top_blocks bclass="hdbtop" balign="left"}
+        </div>
       
-      {include file="blocks.tpl.html" binfo=$top_blocks bclass="hdbtop" balign="left"}
 
       
 
